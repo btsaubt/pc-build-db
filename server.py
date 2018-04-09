@@ -96,7 +96,7 @@ def index():
     return render_template("index.html")
 
 
-@app.route('/index')
+@app.route('/build_index')
 def all_builds():
     """
     request is a special object that Flask provides to access web request information:
