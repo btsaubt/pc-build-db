@@ -8,7 +8,8 @@
 
 
 <body>
-  <h1>Some famous Computer Scientists</h1>
+  <h1>PC Part Database</h1>
+  <h2>Builds</h2>
   <div>{{data}}</div>
 
   <div>
@@ -17,10 +18,8 @@
     {% endfor %}
   </div>
 
-<p><a href="another">Go to the other page</a></p>
-
-<form method="POST" action="/add">
-<p>Name of new computer scientist: <input type="text" name="name"> <input type="submit" value="Add"></p>
+<form method="POST" action="/add_new_build">
+<p>Add a new build: <input type="text" name="Build Name"> <input onClick="window.location.href='./build_index.html'" type="submit" value="Add"></p>
 </form>
 
 </body>

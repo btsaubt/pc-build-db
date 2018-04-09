@@ -15,9 +15,11 @@ Read about it online.
 """
 
 import os
+import logging
 from sqlalchemy import *
 from sqlalchemy.pool import NullPool
 from flask import Flask, request, render_template, g, redirect, Response
+
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
@@ -51,6 +53,13 @@ engine.execute("""CREATE TABLE IF NOT EXISTS test (
   name text
 );""")
 engine.execute("""INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'), ('ada lovelace');""")
+
+
+def format_sql_request(tablename, attributes="*", condition="*"):
+  '''
+  format a select query given table name, attributes to select, and condition
+  '''
+  return "SELECT {} FROM {} WHERE {}".format(tablename, tuples, attributes)
 
 
 @app.before_request

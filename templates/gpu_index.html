@@ -1,0 +1,31 @@
+<html>
+  <style>
+    body{ 
+      font-size: 15pt;
+      font-family: arial;
+    }
+  </style>
+
+
+<body>
+  <h1>PC Part Database</h1>
+  <h2>GPU</h2>
+  <div>{{data}}</div>
+  <div>
+    {% for n in data %}
+    <form method="POST" action="/add_build_gpu">
+      <div>{{n}} <input onClick="window.location.href='./build_index.html'" type="submit" value="Add to build"></div>
+    </form>
+    {% endfor %}
+  </div>
+
+<p><a href="another">Return to your build</a></p>
+
+<form method="POST" action="/add_gpu">
+<p><input type="text" name="Build Name"> <input type="submit" value="Add"></p>
+</form>
+
+</body>
+
+
+</html>
