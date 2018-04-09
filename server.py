@@ -119,6 +119,7 @@ def build_index():
         cursor2 = g.conn.execute(
             "SELECT cpu_name, price FROM cpu WHERE cpu_id = {}".format(result['cpu_id']))
         for result2 in cursor2:
+            print cursor2.description
             curr_build += " <td>{}</td>".format(result['cpu_name'])
             curr_price += result['price']
         cursor2.close()
