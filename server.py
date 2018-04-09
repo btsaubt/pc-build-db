@@ -18,11 +18,15 @@ import os
 import logging
 from sqlalchemy import *
 from sqlalchemy.pool import NullPool
-from flask import Flask, request, render_template, g, redirect, Response
+from flask import Flask, request, render_template, g, redirect, Response, session
 
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 app = Flask(__name__, template_folder=tmpl_dir)
+
+
+# set a secret key
+app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
 
 #
@@ -90,6 +94,13 @@ def teardown_request(exception):
     pass
 
 
+@app.route('/build_index')
+def build_index():
+  '''
+  wrapper for build index page
+  '''
+
+
 #
 # @app.route is a decorator around index() that means:
 #   run index() whenever the user tries to access the "/" path using a GET request
@@ -118,6 +129,11 @@ def index():
   # DEBUG: this is debugging code to see what request looks like
   print request.args
 
+  # log in information
+  if 'username' in session:
+    print 'Logged in as {}'.format(escape(session['username'])) #may need to remove escape function
+  else:
+    print 'Not logged in'
 
   #
   # example of a database query
@@ -163,31 +179,38 @@ def index():
   #
   return render_template("index.html", **context)
 
-#
-# This is an example of a different path.  You can see it at:
-# 
-#     localhost:8111/another
-#
-# Notice that the function name is another() rather than index()
-# The functions for each app.route need to have different names
-#
-@app.route('/another')
-def another():
-  return render_template("another.html")
+
+@app.route('/login', methods = ['GET', 'POST'])
+def login():
+  '''
+  '''
+  # if submitting form for login
+  if request.method == 'POST':
+    session['username'] = request.form['username']
+    return redirect(url_for('index'))
+  # if trying to get login page
+  else:
+    return '''
+        <form method="post">
+            <p><input type=text name=username>
+            <p><input type=submit value=Login>
+        </form>
+    '''
+
+@app.route('/logout')
+def logout():
+  '''
+  '''
+  session.pop('username', None)
+  return redirect(url_for('index'))
 
 
-# Example of adding new data to the database
-@app.route('/add', methods=['POST'])
+# Start adding new build to database - keep in session until submitted, so that requirements can be checked.
+@app.route('/add_new_build', methods=['POST'])
 def add():
   name = request.form['name']
   g.conn.execute('INSERT INTO test(name) VALUES (%s)', name)
   return redirect('/')
-
-
-@app.route('/login')
-def login():
-    abort(401)
-    this_is_never_executed()
 
 
 if __name__ == "__main__":
