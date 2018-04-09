@@ -14,10 +14,19 @@
 
   <div>
   <table style="width:100%">
-    {% for n in builds %}
     <tr>
-      <div>{{n}}</div>
+      <td>Build Name</td>
+      <td>CPU</td>
+      <td>Motherboard</td>
+      <td>Power Supply</td>
+      <td>Case</td>
+      <td>Graphics Card</td>
+      <td>Memory</td>
+      <td>Storage</td>
+      <td>Total Cost</td>
     </tr>
+    {% for n in builds %}
+    <tr> {{n}} </tr>
     {% endfor %}
   </table>
   </div>

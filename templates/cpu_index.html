@@ -12,14 +12,28 @@
   <h2>CPU</h2>
   <div>{{data}}</div>
   <div>
-    {% for n in data %}
-    <form method="POST" action="/add_build_cpu">
-      <div>{{n}} <input onClick="window.location.href='./build_index.html'" type="submit" value="Add to build"></div>
-    </form>
-    {% endfor %}
+    <table style="width:100%">
+      <tr>
+        <td> CPU Name </td>
+        <td> Clock Speed </td>
+        <td> # Cores </td>
+        <td> TDP </td>
+        <td> Price </td>
+      </tr>
+      {% for n in cpus %}
+        <tr> 
+          {{n}}
+          <td>
+            <form method="POST" action="/add_build_cpu">
+              <div> <input  type="submit" value="Add to build"></div>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
   </div>
 
-<p><a href="another">Return to your build</a></p>
+<p><a href="index">Return to your build</a></p>
 
 <form method="POST" action="/add_cpu">
 <p><input type="text" name="Build Name"> <input type="submit" value="Add"></p>
