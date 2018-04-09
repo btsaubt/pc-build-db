@@ -93,6 +93,11 @@ def cpu_index():
 
 @app.route('/')
 def index():
+    return render_template("index.html")
+
+
+@app.route('/index')
+def all_builds():
     """
     request is a special object that Flask provides to access web request information:
 
@@ -105,13 +110,6 @@ def index():
 
     # DEBUG: this is debugging code to see what request looks like
     print request.args
-
-    # log in information
-    if 'username' in session:
-        # may need to remove escape function
-        print 'Logged in as {}'.format(escape(session['username']))
-    else:
-        print 'Not logged in'
 
     # let us grab all builds from database and build a table row:
     all_builds = []
@@ -210,20 +208,17 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    '''
-    '''
-    # if submitting form for login
+    error = None
     if request.method == 'POST':
-        session['username'] = request.form['username']
-        return redirect(url_for('index'))
-    # if trying to get login page
-    else:
-        return '''
-        <form method="post">
-            <p><input type=text name=username>
-            <p><input type=submit value=Login>
-        </form>
-    '''
+        if request.form['username'] != app.config['USERNAME']:
+            error = 'Invalid username'
+        elif request.form['password'] != app.config['PASSWORD']:
+            error = 'Invalid password'
+        else:
+            session['logged_in'] = True
+            flash('You were logged in')
+            return redirect(url_for('show_entries'))
+    return render_template('login.html', error=error)
 
 
 @app.route('/logout')
@@ -231,7 +226,8 @@ def logout():
     '''
     pop user from users logged in
     '''
-    session.pop('username', None)
+    session.pop('logged in', None)
+    flash('you were logged in')
     return redirect(url_for('index'))
 
 

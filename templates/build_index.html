@@ -9,19 +9,30 @@
 
 <body>
   <h1>PC Part Database</h1>
-  <h2>Your Build</h2>
-  <div>{{data}}</div>
-  PRINT OUT EVERYTHING IN CURRENT BUILD - NOT COMPLETE YET
+  <h2>Builds</h2>
+  <div>{{builds}}</div>
+
   <div>
-    {% for n in data %}
-    <div>{{n}} <input onClick="window.location.href='/PUT URL OF PART PAGE HERE'" type="submit" value="PUT NAME OF PART HERE"></div>
+  <table style="width:100%">
+    <tr>
+      <td>Build Name</td>
+      <td>CPU</td>
+      <td>Motherboard</td>
+      <td>Power Supply</td>
+      <td>Case</td>
+      <td>Graphics Card</td>
+      <td>Memory</td>
+      <td>Storage</td>
+      <td>Total Cost</td>
+    </tr>
+    {% for n in builds %}
+    <tr> {{n}} </tr>
     {% endfor %}
+  </table>
   </div>
 
-<p><a href="another">Return to main page</a></p>
-
-<form method="POST" action="/add_complete_build">
-<p><input type="text" name="Build Name"> <input type="submit" value="Add"></p>
+<form method="POST" action="/add_new_build">
+<p>Add a new build: <input type="text" name="Build Name"> <input onClick="window.location.href='./build_index.html'" type="submit" value="Add"></p>
 </form>
 
 </body>
