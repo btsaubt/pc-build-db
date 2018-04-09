@@ -138,11 +138,54 @@ def index():
   #
   # example of a database query
   #
-  cursor = g.conn.execute("SELECT name FROM test")
-  names = []
+  # cursor = g.conn.execute("SELECT name FROM test")
+  # names = []
+  # for result in cursor:
+  #   names.append(result['name'])  # can also be accessed using result[0]
+  # cursor.close()
+
+  # let us grab all builds from database:
+  all_builds = []
+  cursor = g.conn.execute("SELECT * FROM builds")
   for result in cursor:
-    names.append(result['name'])  # can also be accessed using result[0]
-  cursor.close()
+    curr_build = {}
+    build_id = result['build_id']
+    curr_build['build_name'] = result['build_name']
+
+    # select names of parts using id in build
+    cursor2 = g.conn.execute("SELECT cpu_name FROM cpu WHERE cpu_id == {}".format(result['cpu_id']))
+    for result2 in cursor2:
+      curr_build['cpu_name'] = result['cpu_name']
+
+    cursor2 = g.conn.execute("SELECT mobo_name FROM motherboard WHERE mobo_id == {}".format(result['mobo_id']))
+    for result2 in cursor2:
+      curr_build['mobo_name'] = result['mobo_name']
+
+    cursor2 = g.conn.execute("SELECT psu_name FROM psu WHERE psu_id == {}".format(result['psu_id']))
+    for result2 in cursor2:
+      curr_build['psu_name'] = result['psu_name']
+
+    cursor2 = g.conn.execute("SELECT case_name FROM case WHERE case_id == {}".format(result['case_id']))
+    for result2 in cursor2:
+      curr_build['case_name'] = result['case_name']
+
+    # select names of parts using has_gpu, has_memory, and has_storage
+    curr_build['gpu_name'] = []
+    cursor2 = g.conn.execute("SELECT g.gpu_name FROM gpu g, has_gpu hg WHERE g.gpu_id == hg.gpu_id AND hg.build_id == {}".format(result['build_id']))
+    for result2 in cursor2:
+      curr_build['gpu_name'].append(result['gpu_name'])
+
+    curr_build['mem_name'] = []
+    cursor2 = g.conn.execute("SELECT m.mem_name FROM memory m, has_memory hm WHERE m.mem_id == hm.mem_id AND hm.build_id == {}".format(result['build_id']))
+    for result2 in cursor2:
+      curr_build['mem_name'].append(result['mem_name'])
+
+    cursor2 = g.conn.execute("SELECT s.sto_name FROM storage s, has_storage hs WHERE s.sto_id == hs.sto_id AND hs.build_id == {}".format(result['build_id']))
+    for result2 in cursor2:
+      curr_build['sto_name'] = result['sto_name']
+
+    all_builds.append(curr_build)
+  cursor.close
 
   #
   # Flask uses Jinja templates, which is an extension to HTML where you can
@@ -170,7 +213,7 @@ def index():
   #     <div>{{n}}</div>
   #     {% endfor %}
   #
-  context = dict(data = names)
+  context = dict(builds = all_builds)
 
 
   #
