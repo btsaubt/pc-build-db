@@ -16,7 +16,7 @@ Read about it online.
 
 import os
 import logging
-from sqlalchemy import *
+# from sqlalchemy import *
 from sqlalchemy.pool import NullPool
 from flask import Flask, request, render_template, g, redirect, Response, session
 
@@ -26,7 +26,7 @@ tmpl_dir = os.path.join(os.path.dirname(
 app = Flask(__name__, template_folder=tmpl_dir)
 # set a secret key
 app.secret_key = 'l\xbd!\xeaN\xc8\x16r\xa3:\xa4\xc9\x15\xea\xc9)\xcd\xd3\xd0\x1a\xab6\xe3\x89'
-DATABASEURI = "postgresql://user:password@35.227.79.146/proj1part2"
+DATABASEURI = "postgresql://kf2448:2558@35.227.79.146/proj1part2"
 engine = create_engine(DATABASEURI)
 
 
