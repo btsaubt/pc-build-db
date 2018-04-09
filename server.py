@@ -117,28 +117,28 @@ def build_index():
 
         # select names of parts using id in build
         cursor2 = g.conn.execute(
-            "SELECT cpu_name, price FROM cpu WHERE cpu_id == {}".format(result['cpu_id']))
+            "SELECT cpu_name, price FROM cpu WHERE cpu_id = {}".format(result['cpu_id']))
         for result2 in cursor2:
             curr_build += " <td>{}</td>".format(result['cpu_name'])
             curr_price += result['price']
         cursor2.close()
 
         cursor2 = g.conn.execute(
-            "SELECT mobo_name, price FROM motherboard WHERE mobo_id == {}".format(result['mobo_id']))
+            "SELECT mobo_name, price FROM motherboard WHERE mobo_id = {}".format(result['mobo_id']))
         for result2 in cursor2:
             curr_build += " <td>{}</td>".format(result['mobo_name'])
             curr_price += result['price']
         cursor2.close()
 
         cursor2 = g.conn.execute(
-            "SELECT psu_name, price FROM psu WHERE psu_id == {}".format(result['psu_id']))
+            "SELECT psu_name, price FROM psu WHERE psu_id = {}".format(result['psu_id']))
         for result2 in cursor2:
             curr_build += " <td>{}</td>".format(result['psu_name'])
             curr_price += result['price']
         cursor2.close()
 
         cursor2 = g.conn.execute(
-            "SELECT case_name, price FROM case WHERE case_id == {}".format(result['case_id']))
+            "SELECT case_name, price FROM case WHERE case_id = {}".format(result['case_id']))
         for result2 in cursor2:
             curr_build += " <td>{}</td>".format(result['case_name'])
             curr_price += result['price']
@@ -146,7 +146,7 @@ def build_index():
 
         # select names of parts using has_gpu, has_memory, and has_storage
         cursor2 = g.conn.execute(
-            "SELECT g.gpu_name, g.price FROM gpu g, has_gpu hg WHERE g.gpu_id == hg.gpu_id AND hg.build_id == {}".format(result['build_id']))
+            "SELECT g.gpu_name, g.price FROM gpu g, has_gpu hg WHERE g.gpu_id = hg.gpu_id AND hg.build_id = {}".format(result['build_id']))
         curr_build += "<td>"
         counter = 0
         for result2 in cursor2:
@@ -160,7 +160,7 @@ def build_index():
         cursor2.close()
 
         cursor2 = g.conn.execute(
-            "SELECT m.mem_name, m.price FROM memory m, has_memory hm WHERE m.mem_id == hm.mem_id AND hm.build_id == {}".format(result['build_id']))
+            "SELECT m.mem_name, m.price FROM memory m, has_memory hm WHERE m.mem_id = hm.mem_id AND hm.build_id = {}".format(result['build_id']))
         curr_build += "<td>"
         counter = 0
         for result2 in cursor2:
@@ -174,7 +174,7 @@ def build_index():
         cursor2.close()
 
         cursor2 = g.conn.execute(
-            "SELECT s.sto_name, s.price FROM storage s, has_storage hs WHERE s.sto_id == hs.sto_id AND hs.build_id == {}".format(result['build_id']))
+            "SELECT s.sto_name, s.price FROM storage s, has_storage hs WHERE s.sto_id = hs.sto_id AND hs.build_id = {}".format(result['build_id']))
         curr_build += "<td>"
         counter = 0
         for result2 in cursor2:
