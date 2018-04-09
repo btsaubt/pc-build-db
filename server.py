@@ -92,7 +92,7 @@ def cpu_index():
 
 
 @app.route('/build_index')
-def all_builds():
+def build_index():
     """
     request is a special object that Flask provides to access web request information:
 
