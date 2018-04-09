@@ -91,12 +91,6 @@ def cpu_index():
     return render_template("cpu_index.html", **context)
 
 
-@app.route('/')
-def index():
-    return redirect((url_for('build_index')))
-    # return render_template("index.html")
-
-
 @app.route('/build_index')
 def all_builds():
     """
@@ -238,6 +232,12 @@ def add():
     name = request.form['name']
     g.conn.execute('INSERT INTO test(name) VALUES (%s)', name)
     return redirect('/')
+
+
+@app.route('/')
+def index():
+    return redirect(url_for('build_index'))
+    # return render_template("index.html")
 
 
 if __name__ == "__main__":
