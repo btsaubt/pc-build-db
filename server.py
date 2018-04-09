@@ -16,9 +16,9 @@ Read about it online.
 
 import os
 import logging
-from sqlalchemy import create_engine, url_for
+from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
-from flask import Flask, request, render_template, g, redirect, Response, session
+from flask import Flask, request, render_template, g, redirect, Response, session, url_for, flash
 
 
 tmpl_dir = os.path.join(os.path.dirname(
