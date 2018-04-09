@@ -93,7 +93,8 @@ def cpu_index():
 
 @app.route('/')
 def index():
-    return render_template("index.html")
+    return redirect((url_for('build_index')))
+    # return render_template("index.html")
 
 
 @app.route('/build_index')
@@ -217,7 +218,7 @@ def login():
         else:
             session['logged_in'] = True
             flash('You were logged in')
-            return redirect(url_for('show_entries'))
+            return redirect(url_for('index'))
     return render_template('login.html', error=error)
 
 
