@@ -91,6 +91,21 @@ def cpu_index():
     return render_template("cpu_index.html", **context)
 
 
+@app.route('/current_build')
+def current_build():
+    '''
+    show current parts in build
+    '''
+    session['build_name'] = request.form['BuildName']
+    if 'cpu_id' in session:
+        print "cpu exists"
+
+    context = dict(build_name=session['build_name'], cpu_name='', mobo_name='',
+                   psu_name='', case_name='', gpu_name='', mem_name='', sto_name='', total_cost=0)
+
+    return render_template("current_build.html", **context)
+
+
 # Start adding new build to database - keep in session until submitted, so that requirements can be checked.
 @app.route('/add_new_build', methods=['POST'])
 def add_new_build():
@@ -104,10 +119,7 @@ def add_new_build():
     session.pop('mem_id', None)
     session.pop('sto_id', None)
 
-    context = dict(build_name=session['build_name'], cpu_name='', mobo_name='',
-                   psu_name='', case_name='', gpu_name='', mem_name='', sto_name='', total_cost=0)
-
-    return render_template("cpu_index.html", **context)
+    return redirect(url_for(current_build))
 
 
 @app.route('/build_index')
