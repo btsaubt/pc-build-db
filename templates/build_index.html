@@ -6,6 +6,7 @@
     }
   </style>
 
+<title>PC Build</title>
 <link rel=stylesheet type=text/css href="{{ url_for'static', filename='style.css') }}">
 <div class=page>
   <h1>Builds</h1>
@@ -19,7 +20,22 @@
   {% for message in get_flashed_messages() %}
     <div class=flash>{{ message }}</div>
   {% endfor %}
-  {$ block body $} {% endblock %}
+  {$ block body $} 
+
+  <h2>Login</h2>
+  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+
+  <form action="{{ url_for('login') }}" method=post>
+    <d1>
+      <dt>Username:
+      <dd><input type=text name=username>
+      <dt>Password:
+      <dd><input type=password name=password>
+      <dd><input type=submit value=Login>
+    </d1>
+  </form>
+  
+  {% endblock %}
 </div>
 
 
