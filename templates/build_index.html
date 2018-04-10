@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% block body %}
 
+
 <style>
 table, th, tr {
   border: 1px solid black;
@@ -27,7 +28,6 @@ th, tr {
 
   <div id="container">
   <table style="width:100%">
-
     <tr>
       <th>Build Name</th>
       <th>CPU</th>
@@ -45,10 +45,9 @@ th, tr {
   </table>
   </div>
 
-<form method="POST" action="/add_new_build">
-<p>Add a new build: <input type="text" name="Build Name"> <input onClick="window.location.href='./build_index.html'" type="submit" value="Add"></p>
-</form>
-
+  <form method="POST" action="{{ url_for('add_new_build') }}">
+  <p>Add a new build: <input type="text" name="BuildName"> <input type="submit" value="Add"></p>
+  </form>                    
 
 
 {% endblock %}

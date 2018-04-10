@@ -15,7 +15,9 @@ Read about it online.
 """
 
 import os
-import logging
+import sys
+# import logging
+import click
 from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
 from flask import Flask, request, render_template, g, redirect, Response, session, url_for, flash
@@ -34,24 +36,25 @@ engine = create_engine(DATABASEURI)
 #   id serial,
 #   name text
 # );""")
-# engine.execute("""INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'), ('ada lovelace');""")
+# engine.execute("""INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'),
+# ('ada lovelace');""")
 
 
 @app.before_request
 def before_request():
     """
-    This function is run at the beginning of every web request 
-    (every time you enter an address in the web browser).
+    This function is run at the beginning of every web request (every time you enter an address in
+    the web browser).
+
     We use it to setup a database connection that can be used throughout the request.
 
     The variable g is globally accessible.
     """
     try:
         g.conn = engine.connect()
-    except:
-        print "uh oh, problem connecting to database"
-        import traceback
-        traceback.print_exc()
+    except Exception as err:
+        print "uh oh, problem connecting to database:"
+        print err
         g.conn = None
 
 
@@ -62,24 +65,24 @@ def teardown_request(exception):
     If you don't, the database could run out of memory!
     """
     try:
+        print exception
         g.conn.close()
-    except Exception as e:
-        pass
+    except Exception as err:
+        print err
 
 
 @app.route('/cpu_index')
 def cpu_index():
-    '''
+    """
     get all CPU ids and information from sql table
-    '''
+    """
 
     all_cpus = []
     all_ids = []
     cursor = g.conn.execute("SELECT * FROM cpu")
     for result in cursor:
-        all_cpus.append('<td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td>'.
-                        format(result['cpu_name'], result['speed'], result['cores'],
-                               result['tdp'], result['price']))
+        all_cpus.append('<td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td>'.format(
+            result['cpu_name'], result['speed'], result['cores'], result['tdp'], result['price']))
         all_ids.append(result['cpu_id'])
 
     context = dict(cpus=all_cpus, cpu_ids=all_ids)
@@ -91,23 +94,50 @@ def cpu_index():
     return render_template("cpu_index.html", **context)
 
 
-# Start adding new build to database - keep in session until submitted, so that requirements can be checked.
+@app.route('/current_build')
+def current_build():
+    """
+    show current parts in build
+    """
+    print >> sys.stderr, 'showing build {}'.format(session['build_name'])
+
+    session['build_name'] = session['build_name'] # get this line to work!!!
+
+    context = dict(build_name=session['build_name'], cpu_name='cpu name', mobo_name='mobo name',
+                   psu_name='psu name', case_name='case name', gpu_name='gpu name',
+                   mem_name='memory name', sto_name='storage name', total_cost=0)
+
+    return render_template("current_build.html", **context)
+
+
+# Start adding new build to database - keep in session until submitted, so that requirements can be
+# checked.
 @app.route('/add_new_build', methods=['POST'])
 def add_new_build():
+    """
+    add a new build to database (only have name of build at this point)
+    """
     session['build_name'] = request.form['BuildName']
     # check if this fails if cpu_id is already nonexistent/popped
-    session.pop('cpu_id', None)
-    session.pop('mobo_id', None)
-    session.pop('psu_id', None)
-    session.pop('case_id', None)
-    session.pop('gpu_id', None)
-    session.pop('mem_id', None)
-    session.pop('sto_id', None)
 
-    context = dict(build_name=session['build_name'], cpu_name='', mobo_name='',
-                   psu_name='', case_name='', gpu_name='', mem_name='', sto_name='', total_cost=0)
+    print >> sys.stderr, 'trying to build {}'.format(session['build_name'])
 
-    return render_template("cpu_index.html", **context)
+    if 'cpu_id' in session:
+        session.pop('cpu_id', None)
+    if 'mobo_id' in session:
+        session.pop('mobo_id', None)
+    if 'psu_id' in session:
+        session.pop('psu_id', None)
+    if 'case_id' in session:
+        session.pop('case_id', None)
+    if 'gpu_id' in session:
+        session.pop('gpu_id', None)
+    if 'mem_id' in session:
+        session.pop('mem_id', None)
+    if 'sto_id' in session:
+        session.pop('sto_id', None)
+
+    return redirect(url_for('current_build'))
 
 
 @app.route('/build_index')
@@ -127,10 +157,11 @@ def build_index():
 
     # let us grab all builds from database and build a table row:
     all_builds = []
+    all_build_ids = []
     cursor = g.conn.execute("SELECT * FROM builds")
     for result in cursor:
         curr_build = ''
-        build_id = result['build_id']
+        all_build_ids.append(result['build_id'])
         curr_build = '<td>{}</td>'.format(result['build_name'])
         curr_price = 0
 
@@ -165,7 +196,8 @@ def build_index():
 
         # select names of parts using has_gpu, has_memory, and has_storage
         cursor2 = g.conn.execute(
-            "SELECT g.gpu_name, g.price FROM gpu g, has_gpu hg WHERE g.gpu_id = hg.gpu_id AND hg.build_id = {}".format(result['build_id']))
+            '''SELECT g.gpu_name, g.price FROM gpu g, has_gpu hg WHERE g.gpu_id = hg.gpu_id AND
+ hg.build_id = {}'''.format(result['build_id']))
         curr_build += "<td>"
         counter = 0
         for result2 in cursor2:
@@ -178,7 +210,8 @@ def build_index():
         cursor2.close()
 
         cursor2 = g.conn.execute(
-            "SELECT m.mem_name, m.price FROM memory m, has_memory hm WHERE m.mem_id = hm.mem_id AND hm.build_id = {}".format(result['build_id']))
+            '''SELECT m.mem_name, m.price FROM memory m, has_memory hm WHERE m.mem_id = hm.mem_id
+ AND hm.build_id = {}'''.format(result['build_id']))
         curr_build += "<td>"
         counter = 0
         for result2 in cursor2:
@@ -191,7 +224,8 @@ def build_index():
         cursor2.close()
 
         cursor2 = g.conn.execute(
-            "SELECT s.sto_name, s.price FROM storage s, has_storage hs WHERE s.sto_id = hs.sto_id AND hs.build_id = {}".format(result['build_id']))
+            '''SELECT s.sto_name, s.price FROM storage s, has_storage hs WHERE s.sto_id = hs.sto_id
+ AND hs.build_id = {}'''.format(result['build_id']))
         curr_build += "<td>"
         counter = 0
         for result2 in cursor2:
@@ -206,9 +240,9 @@ def build_index():
         curr_build += "<td>{}</td>".format(curr_price)
 
         all_builds.append(curr_build)
-    cursor.close
+    cursor.close()
 
-    context = dict(builds=all_builds)
+    context = dict(builds=all_builds, build_ids=all_build_ids)
 
     #
     # render_template looks in the templates/ folder for files.
@@ -219,6 +253,9 @@ def build_index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    login POST/GET method for this app
+    """
     error = None
     if request.method == 'POST':
         if request.form['username'] != app.config['USERNAME']:
@@ -234,9 +271,9 @@ def login():
 
 @app.route('/logout')
 def logout():
-    '''
+    """
     pop user from users logged in
-    '''
+    """
     session.pop('logged_in', None)
     flash('you were logged out')
     return redirect(url_for('index'))
@@ -244,6 +281,9 @@ def logout():
 
 @app.route('/')
 def index():
+    '''
+    default index page - shown only if not logged in
+    '''
     # if not logged in show index.html
     # return render_template("index.html")
 
@@ -252,7 +292,6 @@ def index():
 
 
 if __name__ == "__main__":
-    import click
 
     @click.command()
     @click.option('--debug', is_flag=True)
