@@ -12,9 +12,35 @@
   <h2>Your Build - {{build_name}}</h2>
   
   <div>
-    {% for n in data %}
-    <div>{{n}} <input onClick="window.location.href='/PUT URL OF PART PAGE HERE'" type="submit" value="PUT NAME OF PART HERE"></div>
-    {% endfor %}
+    <table>
+      <tr>
+        <th>Part</th> <th> Part Name </th> <!-- <th></th> -->
+      </tr>
+      <tr>
+        <td>CPU</td> <td>{{cpu_name}}</td>
+      </tr>
+      <tr>
+        <td>Motherboard</td> <td>{{mobo_name}}</td>
+      </tr>
+      <tr>
+        <td>Power Supply</td> <td>{{psu_name}}</td>
+      </tr>
+      <tr>
+        <td>Case</td> <td>{{case_name}}</td>
+      </tr>
+      <tr>
+        <td>Graphics Card</td> <td>{{gpu_name}}</td>
+      </tr>
+      <tr>
+        <td>Memory</td> <td>{{mem_name}}</td>
+      </tr>
+      <tr>
+        <td>Storage</td> <td>{{sto_name}}</td>
+      </tr>
+      <tr>
+        <td>Total Cost</td> <td>{{total_cost}}</td>
+      </tr>
+    </table>
   </div>
 
 <p><a href="another">Return to main page</a></p>

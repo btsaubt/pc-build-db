@@ -91,6 +91,25 @@ def cpu_index():
     return render_template("cpu_index.html", **context)
 
 
+# Start adding new build to database - keep in session until submitted, so that requirements can be checked.
+@app.route('/add_new_build', methods=['POST'])
+def add_new_build():
+    session['build_name'] = request.form['BuildName']
+    # check if this fails if cpu_id is already nonexistent/popped
+    session.pop('cpu_id', None)
+    session.pop('mobo_id', None)
+    session.pop('psu_id', None)
+    session.pop('case_id', None)
+    session.pop('gpu_id', None)
+    session.pop('mem_id', None)
+    session.pop('sto_id', None)
+
+    context = dict(build_name=session['build_name'], cpu_name='', mobo_name='',
+                   psu_name='', case_name='', gpu_name='', mem_name='', sto_name='', total_cost=0)
+
+    return render_template("cpu_index.html", **context)
+
+
 @app.route('/build_index')
 def build_index():
     """
@@ -218,23 +237,18 @@ def logout():
     '''
     pop user from users logged in
     '''
-    session.pop('logged in', None)
-    flash('you were logged in')
+    session.pop('logged_in', None)
+    flash('you were logged out')
     return redirect(url_for('index'))
-
-
-# Start adding new build to database - keep in session until submitted, so that requirements can be checked.
-@app.route('/add_new_build', methods=['POST'])
-def add():
-    name = request.form['name']
-    g.conn.execute('INSERT INTO test(name) VALUES (%s)', name)
-    return redirect('/')
 
 
 @app.route('/')
 def index():
-    return redirect(url_for('build_index'))
+    # if not logged in show index.html
     # return render_template("index.html")
+
+    # if logged in go to builds
+    return redirect(url_for('build_index'))
 
 
 if __name__ == "__main__":
