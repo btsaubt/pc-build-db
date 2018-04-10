@@ -132,7 +132,7 @@ def add_new_build():
     if 'sto_id' in session:
         session.pop('sto_id', None)
 
-    return redirect(url_for(current_build))
+    return redirect(url_for('current_build'))
 
 
 @app.route('/build_index')
