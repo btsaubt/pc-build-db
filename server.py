@@ -101,11 +101,101 @@ def current_build():
     """
     print >> sys.stderr, 'showing build {}'.format(session['build_name'])
 
-    session['build_name'] = session['build_name'] # get this line to work!!!
+    context['build_name'] = session['build_name'] # get this line to work!!!
+    curr_price = 0
 
-    context = dict(build_name=session['build_name'], cpu_name='cpu name', mobo_name='mobo name',
-                   psu_name='psu name', case_name='case name', gpu_name='gpu name',
-                   mem_name='memory name', sto_name='storage name', total_cost=0)
+    if 'cpu_id' in session:
+        cursor2 = g.conn.execute(
+            "SELECT cpu_name, price FROM cpu WHERE cpu_id = {}".format(session['cpu_id']))
+        for result2 in cursor2:
+            context['cpu_name'] = result2['cpu_name']
+            curr_price += result2['price']
+        cursor2.close()
+    else:
+        context['cpu_name'] = "Select a CPU"
+
+    if 'mobo_id' in session:
+        cursor2 = g.conn.execute(
+            "SELECT mobo_name, price FROM motherboard WHERE mobo_id = {}".
+            format(session['mobo_id']))
+        for result2 in cursor2:
+            context['mobo_name'] = result2['mobo_name']
+            curr_price += result2['price']
+        cursor2.close()
+    else:
+        context['mobo_name'] = "Select a motherboard"
+
+    if 'psu_id' in session:
+        cursor2 = g.conn.execute(
+            "SELECT psu_name, price FROM psu WHERE psu_id = {}".format(session['psu_id']))
+        for result2 in cursor2:
+            context['psu_name'] = result2['psu_name']
+            curr_price += result2['price']
+        cursor2.close()
+    else:
+        context['psu_name'] = "Select a power supply"
+
+    if 'case_id' in session:
+        cursor2 = g.conn.execute(
+            "SELECT case_name, price FROM cases WHERE case_id = {}".format(session['case_id']))
+        for result2 in cursor2:
+            context['case_name'] = result2['case_name']
+            curr_price += result2['price']
+        cursor2.close()
+    else:
+        context['case_name'] = "Select a case"
+
+    # select names of parts using has_gpu, has_memory, and has_storage
+    if 'gpu_ids' in session:
+        all_gpu_ids = ''
+        for gid in gpu_ids:
+            all_gpu_ids += ' OR gpu_id = {}'.format(gid)
+        all_gpu_ids = all_gpu_ids[4:]
+        gpu_names = []
+        cursor2 = g.conn.execute('SELECT gpu_name, price FROM gpu WHERE {}'.format(all_gpu_ids))
+        for result2 in cursor2:
+            gpu_names.append(result2['gpu_name'])
+            curr_price += result2['price']
+        context['gpu_name'] = gpu_names
+        cursor2.close()
+    else:
+        gpu_names = ["Select a GPU"]
+
+    if 'mem_ids' in session:
+        all_mem_ids = ''
+        for mid in mem_ids:
+            all_mem_ids += ' OR mem_id = {}'.format(mid)
+        all_mem_ids = all_mem_ids[4:]
+        mem_names = []
+        cursor2 = g.conn.execute('SELECT mem_name, price FROM memory WHERE {}'.format(all_mem_ids))
+        for result2 in cursor2:
+            mem_names.append(result2['mem_name'])
+            curr_price += result2['price']
+        context['mem_name'] = mem_names
+        cursor2.close()
+    else:
+        context['mem_name'] = ["Select memory"]
+
+    if 'sto_ids' in session:
+        all_sto_ids = ''
+        for sid in sto_ids:
+            all_sto_ids += ' OR sto_id = {}'.format(sid)
+        all_sto_ids = all_sto_ids[4:]
+        sto_names = []
+        cursor2 = g.conn.execute('SELECT sto_name, price FROM storage WHERE {}'.format(all_sto_ids))
+        for result2 in cursor2:
+            sto_names.append(result2['sto_name'])
+            curr_price += result2['price']
+        context['sto_name'] = sto_names
+        cursor2.close()
+    else:
+        context['sto_name'] = ["Select storage"]
+
+    context['total_cost'] = curr_price
+
+    # context = dict(build_name=session['build_name'], cpu_name='cpu name', mobo_name='mobo name',
+    #                psu_name='psu name', case_name='case name', gpu_name='gpu name',
+    #                mem_name='memory name', sto_name='storage name', total_cost=0)
 
     return render_template("current_build.html", **context)
 
@@ -130,14 +220,24 @@ def add_new_build():
         session.pop('psu_id', None)
     if 'case_id' in session:
         session.pop('case_id', None)
-    if 'gpu_id' in session:
-        session.pop('gpu_id', None)
-    if 'mem_id' in session:
-        session.pop('mem_id', None)
-    if 'sto_id' in session:
-        session.pop('sto_id', None)
+    if 'gpu_ids' in session:
+        session.pop('gpu_ids', None)
+    if 'mem_ids' in session:
+        session.pop('mem_ids', None)
+    if 'sto_ids' in session:
+        session.pop('sto_ids', None)
 
     return redirect(url_for('current_build'))
+
+
+@app.route('/add_cpu')
+def add_cpu():
+    """
+    add cpu to session, redirect to current_build
+    """
+    session['cpu_id'] = request.form['cpu_id']
+    return redirect(url_for('current_build'))
+
 
 
 @app.route('/build_index')
