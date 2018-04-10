@@ -102,6 +102,8 @@ def current_build():
     session['build_name'] = request.form['BuildName']
     if 'cpu_id' in session:
         print "cpu exists"
+    else:
+        print "cpu does not exist"
 
     context = dict(build_name=session['build_name'], cpu_name='cpu name',
                    mobo_name='mobo name', psu_name='psu name',
