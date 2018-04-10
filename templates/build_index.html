@@ -1,13 +1,6 @@
-<html>
-  <style>
-    body{ 
-      font-size: 15pt;
-      font-family: arial;
-    }
-  </style>
+{% extends "layout.html" %}
+{% block body %}
 
-
-<body>
   <h1>PC Part Database</h1>
   <h2>Builds</h2>
 
@@ -34,7 +27,7 @@
 <p>Add a new build: <input type="text" name="Build Name"> <input onClick="window.location.href='./build_index.html'" type="submit" value="Add"></p>
 </form>
 
-</body>
 
 
-</html>
+{% endblock %}
+
