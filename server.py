@@ -103,8 +103,11 @@ def current_build():
     if 'cpu_id' in session:
         print "cpu exists"
 
-    context = dict(build_name=session['build_name'], cpu_name='cpu name', mobo_name='mobo name',
-                   psu_name='psu name', case_name='case name', gpu_name='gpu name', mem_name='memory name', sto_name='storage name', total_cost=0)
+    context = dict(build_name=session['build_name'], cpu_name='cpu name',
+                   mobo_name='mobo name', psu_name='psu name',
+                   case_name='case name', gpu_name='gpu name',
+                   mem_name='memory name', sto_name='storage name',
+                   total_cost=0)
 
     return render_template("current_build.html", **context)
 
