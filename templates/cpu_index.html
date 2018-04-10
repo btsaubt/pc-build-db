@@ -12,12 +12,12 @@
         <td> TDP </td>
         <td> Price </td>
       </tr>
-      {% for n in cpus %}
+      {% for row, id in cpus %}
         <tr> 
-          {{n|safe}}
+          {{row|safe}}
           <td>
             <form method="POST" action="/add_build_cpu">
-              <div> <input  type="submit" value="Add to build"></div>
+              <div> <input  type="submit" value="Add to build {{id}}"></div>
             </form>
           </td>
         </tr>

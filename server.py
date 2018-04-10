@@ -85,7 +85,7 @@ def cpu_index():
             result['cpu_name'], result['speed'], result['cores'], result['tdp'], result['price']))
         all_ids.append(result['cpu_id'])
 
-    context = dict(cpus=all_cpus, cpu_ids=all_ids)
+    context = dict(cpus=zip(all_cpus, all_ids))
 
     #
     # render_template looks in the templates/ folder for files.
