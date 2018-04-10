@@ -15,6 +15,7 @@ Read about it online.
 """
 
 import os
+import sys
 import logging
 from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
@@ -96,6 +97,8 @@ def current_build():
     '''
     show current parts in build
     '''
+    print >> sys.stderr, 'showing build {}'.format(session['build_name'])
+
     session['build_name'] = request.form['BuildName']
     if 'cpu_id' in session:
         print "cpu exists"
@@ -111,6 +114,9 @@ def current_build():
 def add_new_build():
     session['build_name'] = request.form['BuildName']
     # check if this fails if cpu_id is already nonexistent/popped
+
+    print >> sys.stderr, 'trying to build {}'.format(session['build_name'])
+
     session.pop('cpu_id', None)
     session.pop('mobo_id', None)
     session.pop('psu_id', None)
