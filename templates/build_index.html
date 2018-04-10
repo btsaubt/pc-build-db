@@ -25,7 +25,7 @@
       <th>Total Cost</th>
     </tr>
     {% for n in builds %}
-      <tr> {{n}} </tr>
+      <tr> {{n|safe}} </tr>
     {% endfor %}
   </table>
   </div>
