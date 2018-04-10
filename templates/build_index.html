@@ -1,45 +1,7 @@
-<html>
-  <style>
-    body{ 
-      font-size: 15pt;
-      font-family: arial;
-    }
-  </style>
-
-<title>PC Build</title>
-<link rel=stylesheet type=text/css href="{{ url_for'static', filename='style.css') }}">
-<div class=page>
-  <h1>Builds</h1>
-  <div class=metanav>
-  {% if not session.logged_in %}
-    <a href="{{ url_for('login')  }}">log in</a>
-  {% else %}
-    <a href="{{ url_for('logout'  }}">log out</a>
-  {% endif %}
-  </div>
-  {% for message in get_flashed_messages() %}
-    <div class=flash>{{ message }}</div>
-  {% endfor %}
-  {$ block body $} 
-
-  <h2>Login</h2>
-  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
-
-  <form action="{{ url_for('login') }}" method=post>
-    <d1>
-      <dt>Username:
-      <dd><input type=text name=username>
-      <dt>Password:
-      <dd><input type=password name=password>
-      <dd><input type=submit value=Login>
-    </d1>
-  </form>
-  
-  {% endblock %}
-</div>
+{% extends "layout.html" %}
+{% block body %}
 
 
-<body>
   <h1>PC Part Database</h1>
   <h2>Builds</h2>
 
@@ -66,7 +28,7 @@
 <p>Add a new build: <input type="text" name="Build Name"> <input onClick="window.location.href='./build_index.html'" type="submit" value="Add"></p>
 </form>
 
-</body>
 
 
-</html>
+{% endblock %}
+
