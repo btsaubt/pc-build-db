@@ -1,13 +1,6 @@
-<html>
-  <style>
-    body{ 
-      font-size: 15pt;
-      font-family: arial;
-    }
-  </style>
+{% extends "layout.html" %}
+{% block body %}
 
-
-<body>
   <h1>PC Part Database</h1>
   <h2>Your Build - {{build_name}}</h2>
   
@@ -17,7 +10,7 @@
         <th>Part</th> <th> Part Name </th> <!-- <th></th> -->
       </tr>
       <tr>
-        <td>CPU</td> <td>{{cpu_name}}</td>
+        <td>CPU</td> <td>{{cpu_name}}</td> <form method="GET" action="cpu_index"> </form>
       </tr>
       <tr>
         <td>Motherboard</td> <td>{{mobo_name}}</td>
@@ -49,7 +42,4 @@
 <p><input type="text" name="Build Name"> <input type="submit" value="Add"></p>
 </form>
 
-</body>
-
-
-</html>
+{% endblock %}
