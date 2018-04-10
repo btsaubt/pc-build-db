@@ -110,7 +110,6 @@ def build_index():
     all_builds = []
     cursor = g.conn.execute("SELECT * FROM builds")
     for result in cursor:
-        print result
         curr_build = ''
         build_id = result['build_id']
         curr_build = '<td>{}</td>'.format(result['build_name'])
@@ -120,29 +119,29 @@ def build_index():
         cursor2 = g.conn.execute(
             "SELECT cpu_name, price FROM cpu WHERE cpu_id = {}".format(result['cpu_id']))
         for result2 in cursor2:
-            curr_build += " <td>{}</td>".format(result['cpu_name'])
-            curr_price += result['price']
+            curr_build += " <td>{}</td>".format(result2['cpu_name'])
+            curr_price += result2['price']
         cursor2.close()
 
         cursor2 = g.conn.execute(
             "SELECT mobo_name, price FROM motherboard WHERE mobo_id = {}".format(result['mobo_id']))
         for result2 in cursor2:
-            curr_build += " <td>{}</td>".format(result['mobo_name'])
-            curr_price += result['price']
+            curr_build += " <td>{}</td>".format(result2['mobo_name'])
+            curr_price += result2['price']
         cursor2.close()
 
         cursor2 = g.conn.execute(
             "SELECT psu_name, price FROM psu WHERE psu_id = {}".format(result['psu_id']))
         for result2 in cursor2:
-            curr_build += " <td>{}</td>".format(result['psu_name'])
-            curr_price += result['price']
+            curr_build += " <td>{}</td>".format(result2['psu_name'])
+            curr_price += result2['price']
         cursor2.close()
 
         cursor2 = g.conn.execute(
             "SELECT case_name, price FROM case WHERE case_id = {}".format(result['case_id']))
         for result2 in cursor2:
-            curr_build += " <td>{}</td>".format(result['case_name'])
-            curr_price += result['price']
+            curr_build += " <td>{}</td>".format(result2['case_name'])
+            curr_price += result2['price']
         cursor2.close()
 
         # select names of parts using has_gpu, has_memory, and has_storage
@@ -152,11 +151,10 @@ def build_index():
         counter = 0
         for result2 in cursor2:
             counter += 1
-            curr_build['gpu_name'].append(result['gpu_name'])
-            curr_build += "{}".format(result['gpu_name'])
+            curr_build += "{}".format(result2['gpu_name'])
             if counter != 1:
                 curr_build += "<br />"  # different gpus lie on same line
-            curr_price += result['price']
+            curr_price += result2['price']
         curr_build += "</td>"
         cursor2.close()
 
@@ -166,11 +164,10 @@ def build_index():
         counter = 0
         for result2 in cursor2:
             counter += 1
-            curr_build['mem_name'].append(result['mem_name'])
-            curr_build += "{}".format(result['mem_name'])
+            curr_build += "{}".format(result2['mem_name'])
             if counter != 1:
                 curr_build += "<br />"  # different gpus lie on same line
-            curr_price += result['price']
+            curr_price += result2['price']
         curr_build += "</td>"
         cursor2.close()
 
@@ -180,11 +177,10 @@ def build_index():
         counter = 0
         for result2 in cursor2:
             counter += 1
-            curr_build['sto_name'].append(result['sto_name'])
-            curr_build += "{}".format(result['sto_name'])
+            curr_build += "{}".format(result2['sto_name'])
             if counter != 1:
                 curr_build += "<br />"  # different gpus lie on same line
-            curr_price += result['price']
+            curr_price += result2['price']
         curr_build += "</td>"
         cursor2.close()
 
