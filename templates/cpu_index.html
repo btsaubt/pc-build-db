@@ -14,7 +14,7 @@
       </tr>
       {% for n in cpus %}
         <tr> 
-          {{n}}
+          {{n|safe}}
           <td>
             <form method="POST" action="/add_build_cpu">
               <div> <input  type="submit" value="Add to build"></div>
