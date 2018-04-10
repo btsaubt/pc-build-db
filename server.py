@@ -138,7 +138,7 @@ def build_index():
         cursor2.close()
 
         cursor2 = g.conn.execute(
-            "SELECT case_name, price FROM case WHERE case_id = {}".format(result['case_id']))
+            "SELECT case_name, price FROM cases WHERE case_id = {}".format(result['case_id']))
         for result2 in cursor2:
             curr_build += " <td>{}</td>".format(result2['case_name'])
             curr_price += result2['price']
