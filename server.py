@@ -103,8 +103,8 @@ def current_build():
     if 'cpu_id' in session:
         print "cpu exists"
 
-    context = dict(build_name=session['build_name'], cpu_name='', mobo_name='',
-                   psu_name='', case_name='', gpu_name='', mem_name='', sto_name='', total_cost=0)
+    context = dict(build_name=session['build_name'], cpu_name='cpu name', mobo_name='mobo name',
+                   psu_name='psu name', case_name='case name', gpu_name='gpu name', mem_name='memory name', sto_name='storage name', total_cost=0)
 
     return render_template("current_build.html", **context)
 
@@ -117,13 +117,20 @@ def add_new_build():
 
     print >> sys.stderr, 'trying to build {}'.format(session['build_name'])
 
-    session.pop('cpu_id', None)
-    session.pop('mobo_id', None)
-    session.pop('psu_id', None)
-    session.pop('case_id', None)
-    session.pop('gpu_id', None)
-    session.pop('mem_id', None)
-    session.pop('sto_id', None)
+    if 'cpu_id' in session:
+        session.pop('cpu_id', None)
+    if 'mobo_id' in session:
+        session.pop('mobo_id', None)
+    if 'psu_id' in session:
+        session.pop('psu_id', None)
+    if 'case_id' in session:
+        session.pop('case_id', None)
+    if 'gpu_id' in session:
+        session.pop('gpu_id', None)
+    if 'mem_id' in session:
+        session.pop('mem_id', None)
+    if 'sto_id' in session:
+        session.pop('sto_id', None)
 
     return redirect(url_for(current_build))
 
