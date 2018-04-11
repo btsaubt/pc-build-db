@@ -74,12 +74,15 @@ def teardown_request(exception):
 @app.route('/cpu_index')
 def cpu_index():
     """
-    get all CPU ids and information from sql table
+    get all CPU ids and information from sql table - if socket correct
     """
 
     all_cpus = []
     all_ids = []
-    cursor = g.conn.execute("SELECT * FROM cpu")
+    query = "SELECT * FROM cpu c, cpu_sockets cs WHERE cs.mobo_id = {} AND c.cpu_id = cs.cpu_id".
+        format(session['mobo_id']) if session['socket'] else "SELECT * FROM cpu"
+    cursor = g.conn.execute(query)
+
     for result in cursor:
         all_cpus.append('<td>{}</td><td>{}GHz</td><td>{}</td><td>{}W</td><td>${}</td>'.format(
             result['cpu_name'], result['speed'], result['cores'], result['tdp'], result['price']))
@@ -93,6 +96,7 @@ def cpu_index():
     #
     return render_template("cpu_index.html", **context)
 
+
 @app.route('/motherboard_index')
 def motherboard_index():
     """
@@ -101,7 +105,21 @@ def motherboard_index():
 
     all_mobos = []
     all_ids = []
-    cursor = g.conn.execute("SELECT * FROM motherboard")
+
+    form_conditional = ''
+    if session['form_factor']:
+        if 'case_id' in session:
+            form_conditional = ' AND ff.case_id = {}'.format(session['case_id'])
+        if 'psu_id' in session:
+            form_conditional += ' AND ff.psu_id = {}'.format(session['psu_id'])
+    else:
+        query = '''SELECT * FROM motherboard m, cpu_sockets cs, form factor ff WHERE cs.cpu_id = {}
+ AND m.mobo_id = cs.mobo_id'''.
+            format(session['mobo_id']) if session['socket'] else "SELECT * FROM motherboard"
+
+    query = "{}{}".format(query, form_conditional)
+    cursor = g.conn.execute(query)
+
     for result in cursor:
         all_mobos.append('<td>{}</td><td>{}</td><td>${}</td>'.format(result['mobo_name'],
                                                                      result['ram_slots'],
@@ -296,7 +314,8 @@ def current_build():
             all_gpu_ids += ' OR gpu_id = {}'.format(gid)
         all_gpu_ids = all_gpu_ids[4:]
         gpu_names = []
-        cursor2 = g.conn.execute('SELECT gpu_name, price FROM gpu WHERE {}'.format(all_gpu_ids))
+        cursor2 = g.conn.execute(
+            'SELECT gpu_name, price FROM gpu WHERE {}'.format(all_gpu_ids))
         for result2 in cursor2:
             gpu_names.append(result2['gpu_name'])
             curr_price += result2['price']
@@ -311,7 +330,8 @@ def current_build():
             all_mem_ids += ' OR mem_id = {}'.format(mid)
         all_mem_ids = all_mem_ids[4:]
         mem_names = []
-        cursor2 = g.conn.execute('SELECT mem_name, price FROM memory WHERE {}'.format(all_mem_ids))
+        cursor2 = g.conn.execute(
+            'SELECT mem_name, price FROM memory WHERE {}'.format(all_mem_ids))
         for result2 in cursor2:
             mem_names.append(result2['mem_name'])
             curr_price += result2['price']
@@ -326,7 +346,8 @@ def current_build():
             all_sto_ids += ' OR sto_id = {}'.format(sid)
         all_sto_ids = all_sto_ids[4:]
         sto_names = []
-        cursor2 = g.conn.execute('SELECT sto_name, price FROM storage WHERE {}'.format(all_sto_ids))
+        cursor2 = g.conn.execute(
+            'SELECT sto_name, price FROM storage WHERE {}'.format(all_sto_ids))
         for result2 in cursor2:
             sto_names.append(result2['sto_name'])
             curr_price += result2['price']
@@ -370,48 +391,55 @@ def add_new_build():
         session.pop('mem_ids', None)
     if 'sto_ids' in session:
         session.pop('sto_ids', None)
+    session['socket'] = False
+    session['form_factor'] = False
 
     return redirect(url_for('current_build'))
 
 
-# ***************ADD LOGIC TO CHECK SOCKET TYPE WHEN TRYING TO ADD CPU OR MOTHERBOARD***************
 @app.route('/add_cpu', methods=['POST'])
 def add_cpu():
     """
     add cpu to session, redirect to current_build
     """
     session['cpu_id'] = request.form['cpu_id']
+    if 'socket' not in session:
+        session['socket'] = True
     return redirect(url_for('current_build'))
 
 
-# ***************ADD LOGIC TO CHECK SOCKET TYPE WHEN TRYING TO ADD CPU OR MOTHERBOARD***************
-# ***************ADD LOGIC TO CHECK FORM FACTOR WHEN TRYING TO ADD CPU OR MOTHERBOARD***************
 @app.route('/add_mobo', methods=['POST'])
 def add_mobo():
     """
     add mobo to session, redirect to current_build
     """
     session['mobo_id'] = request.form['mobo_id']
+    if 'socket' not in session:
+        session['socket'] = True
+    if 'form_factor' not in session:
+        session['form_factor'] = True
     return redirect(url_for('current_build'))
 
 
-# ***************ADD LOGIC TO CHECK FORM FACTOR WHEN TRYING TO ADD CPU OR MOTHERBOARD***************
 @app.route('/add_psu', methods=['POST'])
 def add_psu():
     """
     add psu to session, redirect to current_build
     """
     session['psu_id'] = request.form['psu_id']
+    if 'form_factor' not in session:
+        session['form_factor'] = True
     return redirect(url_for('current_build'))
 
 
-# ***************ADD LOGIC TO CHECK FORM FACTOR WHEN TRYING TO ADD CPU OR MOTHERBOARD***************
 @app.route('/add_case', methods=['POST'])
 def add_case():
     """
     add case to session, redirect to current_build
     """
     session['case_id'] = request.form['case_id']
+    if 'form_factor' not in session:
+        session['form_factor'] = True
     return redirect(url_for('current_build'))
 
 
