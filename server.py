@@ -405,8 +405,7 @@ def add_cpu():
     add cpu to session, redirect to current_build
     """
     session['cpu_id'] = request.form['cpu_id']
-    if 'socket' not in session:
-        session['socket'] = True
+    session['socket'] = True
     return redirect(url_for('current_build'))
 
 
@@ -416,10 +415,8 @@ def add_mobo():
     add mobo to session, redirect to current_build
     """
     session['mobo_id'] = request.form['mobo_id']
-    if 'socket' not in session:
-        session['socket'] = True
-    if 'form_factor' not in session:
-        session['form_factor'] = True
+    session['socket'] = True
+    session['form_factor'] = True
     return redirect(url_for('current_build'))
 
 
@@ -429,8 +426,7 @@ def add_psu():
     add psu to session, redirect to current_build
     """
     session['psu_id'] = request.form['psu_id']
-    if 'form_factor' not in session:
-        session['form_factor'] = True
+    session['form_factor'] = True
     return redirect(url_for('current_build'))
 
 
@@ -440,8 +436,7 @@ def add_case():
     add case to session, redirect to current_build
     """
     session['case_id'] = request.form['case_id']
-    if 'form_factor' not in session:
-        session['form_factor'] = True
+    session['form_factor'] = True
     return redirect(url_for('current_build'))
 
 
