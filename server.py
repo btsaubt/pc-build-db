@@ -510,6 +510,81 @@ def add_sto():
     return redirect(url_for('current_build'))
 
 
+@app.route('remove_cpu', methods=['GET'])
+def remove_cpu():
+    """
+    remove cpu_id from session, redirect to current_build
+    """
+    session.pop('cpu_id', None)
+    return redirect(url_for('current_build'))
+
+
+@app.route('remove_mobo', methods=['GET'])
+def remove_mobo():
+    """
+    remove mobo_id from session, redirect to current_build
+    """
+    session.pop('mobo_id', None)
+    return redirect(url_for('current_build'))
+
+
+@app.route('remove_psu', methods=['GET'])
+def remove_psu():
+    """
+    remove psu_id from session, redirect to current_build
+    """
+    session.pop('psu_id', None)
+    return redirect(url_for('current_build'))
+
+
+@app.route('remove_case', methods=['GET'])
+def remove_case():
+    """
+    remove case_id from session, redirect to current_build
+    """
+    session.pop('case_id', None)
+    return redirect(url_for('current_build'))
+
+
+@app.route('remove_gpu', methods=['POST'])
+def remove_gpu():
+    """
+    remove gpu_id from session, redirect to current_build
+    """
+    if len(session['gpu_ids']) == 1:
+        session.pop('gpu_ids', None)
+    else:
+        session['gpu_ids'].remove(request.form['gpu_id'])
+
+    return redirect(url_for('current_build'))
+
+
+@app.route('remove_mem', methods=['POST'])
+def remove_mem():
+    """
+    remove mem_id from session, redirect to current_build
+    """
+    if len(session['mem_ids']) == 1:
+        session.pop('mem_ids', None)
+    else:
+        session['mem_ids'].remove(request.form['mem_id'])
+
+    return redirect(url_for('current_build'))
+
+
+@app.route('remove_sto', methods=['POST'])
+def remove_sto():
+    """
+    remove sto_id from session, redirect to current_build
+    """
+    if len(session['sto_ids']) == 1:
+        session.pop('sto_ids', None)
+    else:
+        session['sto_ids'].remove(request.form['sto_id'])
+
+    return redirect(url_for('current_build'))
+
+
 @app.route('/build_index')
 def build_index():
     """

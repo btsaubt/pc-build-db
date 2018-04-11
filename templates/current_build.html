@@ -59,7 +59,7 @@
             <td>{{ gpu_n }}</td>
             <td>
               {% if gpu_n != "No graphics card selected" %}
-                <form method="GET" action="{{ url_for('remove_gpu') }}"><input type="submit" value="Remove from build"><input value = "{{gpu_i}}" type="hidden" name="gpu_id"></form>
+                <form method="POST" action="{{ url_for('remove_gpu') }}"><input type="submit" value="Remove from build"><input value = "{{gpu_i}}" type="hidden" name="gpu_id"></form>
               {% endif %}
             </td>
             <td><form method="GET" action="{{ url_for('gpu_index') }}"><input type="submit" value="Add a graphics card"></form></td>
@@ -69,7 +69,7 @@
             <td></td>
             <td>gpu_n</td>
             <td>
-              <form method="GET" action="{{ url_for('remove_gpu') }}"><input type="submit" value="Remove from build"><input value = "{{gpu_i}}" type="hidden" name="gpu_id"></form>
+              <form method="POST" action="{{ url_for('remove_gpu') }}"><input type="submit" value="Remove from build"><input value = "{{gpu_i}}" type="hidden" name="gpu_id"></form>
             </td>
             <td></td>
           </tr>
@@ -83,7 +83,7 @@
             <td>{{ mem_n }}</td>
             <td>
               {% if mem_n != "No memory selected" %}
-                <form method="GET" action="{{ url_for('remove_mem') }}"><input type="submit" value="Remove from build"><input value = "{{mem_i}}" type="hidden" name="mem_id"></form>
+                <form method="POST" action="{{ url_for('remove_mem') }}"><input type="submit" value="Remove from build"><input value = "{{mem_i}}" type="hidden" name="mem_id"></form>
               {% endif %}
             </td>
             <td><form method="GET" action="{{ url_for('memory_index') }}"><input type="submit" value="Add memory"></form></td>
@@ -93,7 +93,7 @@
             <td></td>
             <td>mem_n</td>
             <td>
-              <form method="GET" action="{{ url_for('remove_mem') }}"><input type="submit" value="Remove from build"><input value = "{{mem_i}}" type="hidden" name="mem_id"></form>
+              <form method="POST" action="{{ url_for('remove_mem') }}"><input type="submit" value="Remove from build"><input value = "{{mem_i}}" type="hidden" name="mem_id"></form>
             </td>
             <td></td>
           </tr>
@@ -107,7 +107,7 @@
             <td>{{ sto_n }}</td>
             <td>
               {% if sto_n != "No storage selected" %}
-                <form method="GET" action="{{ url_for('remove_sto') }}"><input type="submit" value="Remove from build"><input value = "{{sto_i}}" type="hidden" name="sto_id"></form>
+                <form method="POST" action="{{ url_for('remove_sto') }}"><input type="submit" value="Remove from build"><input value = "{{sto_i}}" type="hidden" name="sto_id"></form>
               {% endif %}
             </td>
             <td><form method="GET" action="{{ url_for('storage_index') }}"><input type="submit" value="Add storage"></form></td>
@@ -117,7 +117,7 @@
             <td></td>
             <td>sto_n</td>
             <td>
-              <form method="GET" action="{{ url_for('remove_sto') }}"><input type="submit" value="Remove from build"><input value = "{{sto_i}}" type="hidden" name="sto_id"></form>
+              <form method="POST" action="{{ url_for('remove_sto') }}"><input type="submit" value="Remove from build"><input value = "{{sto_i}}" type="hidden" name="sto_id"></form>
             </td>
             <td></td>
           </tr>
