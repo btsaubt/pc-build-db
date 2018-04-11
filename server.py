@@ -81,8 +81,9 @@ def cpu_index():
     all_ids = []
     query = '''SELECT * FROM cpu c, cpu_sockets cs WHERE cs.mobo_id = {} AND c.cpu_id =
  cs.cpu_id'''.format(session['mobo_id']) if session['socket'] else "SELECT * FROM cpu"
-    cursor = g.conn.execute(query)
+    print >> sys.stderr, query
 
+    cursor = g.conn.execute(query)
     for result in cursor:
         all_cpus.append('<td>{}</td><td>{}GHz</td><td>{}</td><td>{}W</td><td>${}</td>'.format(
             result['cpu_name'], result['speed'], result['cores'], result['tdp'], result['price']))
@@ -118,8 +119,9 @@ def motherboard_index():
             session['mobo_id']) if session['socket'] else "SELECT * FROM motherboard"
 
     query = "{}{}".format(query, form_conditional)
-    cursor = g.conn.execute(query)
+    print >> sys.stderr, query
 
+    cursor = g.conn.execute(query)
     for result in cursor:
         all_mobos.append('<td>{}</td><td>{}</td><td>${}</td>'.format(result['mobo_name'],
                                                                      result['ram_slots'],
