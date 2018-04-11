@@ -5,16 +5,16 @@ h1              { border-bottom: 2px solid #eee; }
 h2              { font-size: 1.2em; }
 table			{ width: 100%; border: 1px solid black; table-layout: fixed; }
 
-#buildstyle td:nth-child(1){width:12%;}
+/*#buildstyle td:nth-child(1){width:12%;}
 #buildstyle td:nth-child(2){width:8%;}
-#buildstyle td:nth-child(3){width: 10%;}
-#buildstyle td:nth-child(4){width: 10%;}
+#buildstyle td:nth-child(3){width:10%;}
+#buildstyle td:nth-child(4){width:10%;}
 #buildstyle td:nth-child(5){width:10%;}
 #buildstyle td:nth-child(6){width:15%;}
 #buildstyle td:nth-child(7){width:15%;}
 #buildstyle td:nth-child(8){width:15%;}
 #buildstyle td:nth-child(9){width:5%;}
-
+*/
 
 
 .page           { margin: 0px auto; width: 40em auto; border: 5px solid #ccc;

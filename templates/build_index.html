@@ -15,6 +15,7 @@ th {
 
 td {
   padding: 1px;
+  white-space: nowrap;
 
 }
 
@@ -29,8 +30,8 @@ td {
 </style>
 
   <h2>Builds</h2>
-
   <div id="container">
+
   <table class="buildstyle">
     <tr>
       <th>Build Name</th>
@@ -47,6 +48,7 @@ td {
       <tr> {{n|safe}} </tr>
     {% endfor %}
   </table>
+  
   </div>
 
   <form method="POST" action="{{ url_for('add_new_build') }}">
