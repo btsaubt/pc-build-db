@@ -1,10 +1,36 @@
 {% extends "layout.html" %}
 {% block body %}
 
+
+<style>
+table, th, tr {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+th, tr {
+  padding: 5px;
+}
+
+td {
+  padding: 1px;
+
+}
+
+#container {
+
+  width: 50em;
+  height: auto;
+  padding: 5px;
+
+}
+
+</style>
+
   <h2>Builds</h2>
 
-  <div>
-  <table>
+  <div id="container">
+  <table style="width:100%" border="1">
     <tr>
       <th>Build Name</th>
       <th>CPU</th>
