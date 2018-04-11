@@ -3,19 +3,29 @@
 
 
   <h2>Memory</h2>
-  <div>{{data}}</div>
   <div>
-    {% for n in data %}
-    <form method="POST" action="/add_build_memory">
-      <div>{{n}} <input onClick="window.location.href='./build_index.html'" type="submit" value="Add to build"></div>
-    </form>
-    {% endfor %}
+    <table style="width:100%">
+      <tr>
+        <th> Memory Name </th>
+        <th> Speed </th>
+        <th> CAS </th>
+        <th> Module Size </th>
+        <th> Module Number </th>
+        <th> Price </th>
+      </tr>
+      {% for row, id in mems %}
+        <tr> 
+          {{row|safe}}
+          <td>
+            <form method="POST" action="/add_mem">
+              <div> <input type="submit" value="Add to build"> <input value = "{{id}}" type="hidden" name="mem_id"></div>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
   </div>
 
-<p><a href="another">Return to your build</a></p>
-
-<form method="POST" action="/add_memory">
-<p><input type="text" name="Build Name"> <input type="submit" value="Add"></p>
-</form>
+<p><a href="current_build">Return to your build</a></p>
 
 {% endblock %}
