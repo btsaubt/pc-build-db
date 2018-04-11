@@ -10,7 +10,7 @@
         <th>Part</th> <th> Part Name </th> <th> </th>
       </tr>
       <tr>
-        <td>CPU</td> <td>{{cpu_name}}</td> <td><form method="GET" action="{{ url_for('cpu_index') }}"><input type="submit" value="Select a CPU"></form></td>
+        <td>CPU</td> <td>{{cpu_name}}</td> <td><form method="POST" action="{{ url_for('cpu_index') }}"><input type="submit" value="Select a CPU"></form></td>
       </tr>
       <tr>
         <td>Motherboard</td> <td>{{mobo_name}}</td>

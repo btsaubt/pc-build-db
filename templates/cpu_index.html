@@ -13,12 +13,12 @@
         <td> TDP </td>
         <td> Price </td>
       </tr>
-      {% for n in cpus %}
+      {% for row, id in cpus %}
         <tr> 
-          {{n|safe}}
+          {{row|safe}}
           <td>
-            <form method="POST" action="/add_build_cpu">
-              <div> <input  type="submit" value="Add to build"></div>
+            <form method="POST" action="/add_cpu">
+              <div> <input type="submit" value="Add to build"> <input value = "{{id}}" type="hidden" name="cpu_id"></div>
             </form>
           </td>
         </tr>
@@ -26,11 +26,6 @@
     </table>
   </div>
 
-<p><a href="index">Return to your build</a></p>
-
-<form method="POST" action="/add_cpu">
-<p><input type="text" name="Build Name"> <input type="submit" value="Add"></p>
-</form>
-
+<p><a href="current_build">Return to your build</a></p>
 
 {% endblock %}
