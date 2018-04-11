@@ -13,7 +13,7 @@
         <td>CPU</td>
         <td>{{cpu_name}}</td>
         <td>
-          {% if cpu_name != No CPU selected %}
+          {% if cpu_name != "No CPU selected" %}
             <form method="GET" action="{{ url_for('remove_cpu') }}"><input type="submit" value="Remove from build"></form>
           {% endif %}
         </td>
@@ -24,7 +24,7 @@
         <td>Motherboard</td>
         <td>{{mobo_name}}</td>
         <td>
-          {% if mobo_name != No motherboard selected %}
+          {% if mobo_name != "No motherboard selected" %}
             <form method="GET" action="{{ url_for('remove_mobo') }}"><input type="submit" value="Remove from build"></form>
           {% endif %}
         </td>
@@ -35,7 +35,7 @@
         <td>Power Supply</td>
         <td>{{psu_name}}</td>
         <td>
-          {% if psu_name != No power supply selected %}
+          {% if psu_name != "No power supply selected" %}
             <form method="GET" action="{{ url_for('remove_psu') }}"><input type="submit" value="Remove from build"></form>
           {% endif %}
         </td>
@@ -45,7 +45,7 @@
         <td>Case</td>
         <td>{{case_name}}</td>
         <td>
-          {% if case_name != No case selected %}
+          {% if case_name != "No case selected" %}
             <form method="GET" action="{{ url_for('remove_case') }}"><input type="submit" value="Remove from build"></form>
           {% endif %}
         </td>
@@ -58,7 +58,7 @@
             <td>Graphics Card</td>
             <td>{{ gpu_n }}</td>
             <td>
-              {% if gpu_n != No graphics card selected %}
+              {% if gpu_n != "No graphics card selected" %}
                 <form method="GET" action="{{ url_for('remove_gpu') }}"><input type="submit" value="Remove from build"><input value = "{{gpu_i}}" type="hidden" name="gpu_id"></form>
               {% endif %}
             </td>
@@ -82,7 +82,7 @@
             <td>Memory</td>
             <td>{{ mem_n }}</td>
             <td>
-              {% if mem_n != No memory selected %}
+              {% if mem_n != "No memory selected" %}
                 <form method="GET" action="{{ url_for('remove_mem') }}"><input type="submit" value="Remove from build"><input value = "{{mem_i}}" type="hidden" name="mem_id"></form>
               {% endif %}
             </td>
@@ -106,7 +106,7 @@
             <td>Storage</td>
             <td>{{ sto_n }}</td>
             <td>
-              {% if sto_n != No storage selected %}
+              {% if sto_n != "No storage selected" %}
                 <form method="GET" action="{{ url_for('remove_sto') }}"><input type="submit" value="Remove from build"><input value = "{{sto_i}}" type="hidden" name="sto_id"></form>
               {% endif %}
             </td>
