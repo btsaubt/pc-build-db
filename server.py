@@ -101,7 +101,7 @@ def current_build():
     """
     print >> sys.stderr, 'showing build {}'.format(session['build_name'])
 
-    context = dict('build_name'=session['build_name'])
+    context = dict(build_name=session['build_name'])
     curr_price = 0
 
     if 'cpu_id' in session:
