@@ -114,12 +114,12 @@ def motherboard_index():
             form_conditional = ' AND ff.case_id = {}'.format(session['case_id'])
         if 'psu_id' in session:
             form_conditional += ' AND ff.psu_id = {}'.format(session['psu_id'])
-    else:
-        query = '''SELECT DISTINCT m.mobo_id, m.mobo_name, m.ram_slots, m.price FROM motherboard m,
+
+    query = '''SELECT DISTINCT m.mobo_id, m.mobo_name, m.ram_slots, m.price FROM motherboard m,
  cpu_sockets cs, form_compatible ff WHERE cs.cpu_id = {} AND m.mobo_id = cs.mobo_id'''.format(
             session['cpu_id']) if session['socket'] else "SELECT * FROM motherboard"
 
-    query = "{}{}".format(query, form_conditional)
+    query = "{} AND ram_slots > {} {}".format(query, session['cur_mem_slots'], form_conditional)
     print >> sys.stderr, query
 
     cursor = g.conn.execute(query)
@@ -146,7 +146,22 @@ def psu_index():
 
     all_psus = []
     all_ids = []
-    cursor = g.conn.execute("SELECT * FROM psu")
+
+
+    form_conditional = ''
+    if session['form_factor']:
+        form_conditional = 'WHERE '
+        if 'case_id' in session:
+            form_conditional = 'ff.case_id = {}'.format(session['case_id'])
+        if 'gpu_id' in session:
+            form_conditional += ' {}} ff.gpu_id = {}'.format('AND' if 'case_id' in session else '',
+                session['gpu_id'])
+
+    query = '''SELECT DISTINCT p.psu_id, p.psu_name p.series, p.efficiency, p.watts, p.modular,
+ p.price FROM psu p, form_compatible ff {}'''.format(form_conditional)
+    print >> sys.stderr, query
+
+    cursor = g.conn.execute(query)
     for result in cursor:
         all_psus.append('<td>{}</td><td>{}</td><td>{}</td><td>{}W</td><td>{}</td><td>${}</td>'.
                         format(result['psu_name'], result['series'], result['efficiency'],
@@ -170,7 +185,22 @@ def case_index():
 
     all_cases = []
     all_ids = []
-    cursor = g.conn.execute("SELECT * FROM cases")
+
+
+    form_conditional = ''
+    if session['form_factor']:
+        form_conditional = 'WHERE '
+        if 'psu_id' in session:
+            form_conditional = 'ff.psu_id = {}'.format(session['psu_id'])
+        if 'gpu_id' in session:
+            form_conditional += ' {}} ff.gpu_id = {}'.format('AND' if 'psu_id' in session else '',
+                session['gpu_id'])
+
+    query = '''SELECT DISTINCT c.case_id, c.case_name, c.type, c.ext_bays, c.int_bays, c.price FROM
+ cases c, form_compatible ff {}'''.format(form_conditional)
+    print >> sys.stderr, query
+
+    cursor = g.conn.execute(query)
     for result in cursor:
         all_cases.append('<td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>${}</td>'.
                          format(result['case_name'], result['type'], result['ext_bays'],
@@ -218,7 +248,8 @@ def memory_index():
 
     all_mems = []
     all_ids = []
-    cursor = g.conn.execute("SELECT * FROM memory")
+    cursor = g.conn.execute("SELECT * FROM memory WHERE module_num < {}".format(
+                            session['max_mem_slots'] - session['cur_mem_slots']))
     for result in cursor:
         all_mems.append('<td>{}</td><td>{}</td><td>{}</td><td>{}GB</td><td>{}</td><td>${}</td>'.
                         format(result['mem_name'], result['speed'], result['cas'],
@@ -281,10 +312,11 @@ def current_build():
 
     if 'mobo_id' in session:
         cursor2 = g.conn.execute(
-            "SELECT mobo_name, price FROM motherboard WHERE mobo_id = {}".
+            "SELECT mobo_name, price, ram_slots FROM motherboard WHERE mobo_id = {}".
             format(session['mobo_id']))
         for result2 in cursor2:
             context['mobo_name'] = result2['mobo_name']
+            session['max_mem_slots'] = result2['ram_slots']
             curr_price += result2['price']
         cursor2.close()
     else:
@@ -334,10 +366,11 @@ def current_build():
         all_mem_ids = all_mem_ids[4:]
         mem_names = []
         cursor2 = g.conn.execute(
-            'SELECT mem_name, price FROM memory WHERE {}'.format(all_mem_ids))
+            'SELECT mem_name, price, module_num FROM memory WHERE {}'.format(all_mem_ids))
         for result2 in cursor2:
             mem_names.append(result2['mem_name'])
             curr_price += result2['price']
+            session['cur_mem_slots'] += result2['module_num']
         context['mem_name'] = mem_names
         cursor2.close()
     else:
@@ -394,6 +427,8 @@ def add_new_build():
         session.pop('mem_ids', None)
     if 'sto_ids' in session:
         session.pop('sto_ids', None)
+    session['max_mem_slots'] = 8
+    session['cur_mem_slots'] = 0
     session['socket'] = False
     session['form_factor'] = False
 
@@ -418,6 +453,7 @@ def add_mobo():
     session['mobo_id'] = request.form['mobo_id']
     session['socket'] = True
     session['form_factor'] = True
+
     return redirect(url_for('current_build'))
 
 
@@ -457,6 +493,9 @@ def add_mem():
     """
     add memory to session, redirect to current_build
     """
+    # if not enough ram slots, redirect as error and flash message
+
+    # if enough ram slots, add to build
     session['mem_id'] = request.form['mem_id']
     return redirect(url_for('current_build'))
 
