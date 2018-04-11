@@ -510,7 +510,7 @@ def add_sto():
     return redirect(url_for('current_build'))
 
 
-@app.route('remove_cpu', methods=['GET'])
+@app.route('/remove_cpu', methods=['GET'])
 def remove_cpu():
     """
     remove cpu_id from session, redirect to current_build
@@ -519,7 +519,7 @@ def remove_cpu():
     return redirect(url_for('current_build'))
 
 
-@app.route('remove_mobo', methods=['GET'])
+@app.route('/remove_mobo', methods=['GET'])
 def remove_mobo():
     """
     remove mobo_id from session, redirect to current_build
@@ -528,7 +528,7 @@ def remove_mobo():
     return redirect(url_for('current_build'))
 
 
-@app.route('remove_psu', methods=['GET'])
+@app.route('/remove_psu', methods=['GET'])
 def remove_psu():
     """
     remove psu_id from session, redirect to current_build
@@ -537,7 +537,7 @@ def remove_psu():
     return redirect(url_for('current_build'))
 
 
-@app.route('remove_case', methods=['GET'])
+@app.route('/remove_case', methods=['GET'])
 def remove_case():
     """
     remove case_id from session, redirect to current_build
@@ -546,7 +546,7 @@ def remove_case():
     return redirect(url_for('current_build'))
 
 
-@app.route('remove_gpu', methods=['POST'])
+@app.route('/remove_gpu', methods=['POST'])
 def remove_gpu():
     """
     remove gpu_id from session, redirect to current_build
@@ -559,7 +559,7 @@ def remove_gpu():
     return redirect(url_for('current_build'))
 
 
-@app.route('remove_mem', methods=['POST'])
+@app.route('/remove_mem', methods=['POST'])
 def remove_mem():
     """
     remove mem_id from session, redirect to current_build
@@ -572,7 +572,7 @@ def remove_mem():
     return redirect(url_for('current_build'))
 
 
-@app.route('remove_sto', methods=['POST'])
+@app.route('/remove_sto', methods=['POST'])
 def remove_sto():
     """
     remove sto_id from session, redirect to current_build
