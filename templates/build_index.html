@@ -3,13 +3,14 @@
 
 
 <style>
-table, th, tr {
+table, th, td {
+  width:100%;
   border: 1px solid black;
   border-collapse: collapse;
 }
 
-th, tr {
-  padding: 5px;
+th {
+  padding: 5px 10px;
 }
 
 td {
@@ -19,9 +20,9 @@ td {
 
 #container {
 
-  width: 50em;
-  height: auto;
-  padding: 5px;
+  width: inherit;
+  height: inherit;
+  margin: 2em;
 
 }
 
@@ -30,7 +31,7 @@ td {
   <h2>Builds</h2>
 
   <div id="container">
-  <table style="width:100%" border="1">
+  <table class="buildstyle">
     <tr>
       <th>Build Name</th>
       <th>CPU</th>
