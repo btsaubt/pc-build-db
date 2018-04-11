@@ -114,8 +114,8 @@ def motherboard_index():
             form_conditional += ' AND ff.psu_id = {}'.format(session['psu_id'])
     else:
         query = '''SELECT * FROM motherboard m, cpu_sockets cs, form factor ff WHERE cs.cpu_id = {}
- AND m.mobo_id = cs.mobo_id'''.
-            format(session['mobo_id']) if session['socket'] else "SELECT * FROM motherboard"
+ AND m.mobo_id = cs.mobo_id'''.format(
+            session['mobo_id']) if session['socket'] else "SELECT * FROM motherboard"
 
     query = "{}{}".format(query, form_conditional)
     cursor = g.conn.execute(query)
