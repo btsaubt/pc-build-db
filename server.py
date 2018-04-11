@@ -159,7 +159,7 @@ def current_build():
         context['gpu_name'] = gpu_names
         cursor2.close()
     else:
-        gpu_names = ["Select a GPU"]
+        context['gpu_name'] = ["Select a GPU"]
 
     if 'mem_ids' in session:
         all_mem_ids = ''
@@ -230,7 +230,7 @@ def add_new_build():
     return redirect(url_for('current_build'))
 
 
-@app.route('/add_cpu')
+@app.route('/add_cpu', methods=['POST'])
 def add_cpu():
     """
     add cpu to session, redirect to current_build
