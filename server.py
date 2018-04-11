@@ -350,14 +350,14 @@ def current_build():
         all_gpu_ids = all_gpu_ids[4:]
         gpu_names = []
         cursor2 = g.conn.execute(
-            'SELECT gpu_name, price FROM gpu WHERE {}'.format(all_gpu_ids))
+            'SELECT gpu_name, gpu_id price FROM gpu WHERE {}'.format(all_gpu_ids))
         for result2 in cursor2:
-            gpu_names.append(result2['gpu_name'])
+            gpu_names.append((result2['gpu_name'], result2['gpu_id']))
             curr_price += result2['price']
         context['gpu_name'] = gpu_names
         cursor2.close()
     else:
-        context['gpu_name'] = ["No GPU selected"]
+        context['gpu_name'] = [("No graphics card selected", -1)]
 
     if 'mem_ids' in session:
         all_mem_ids = ''
@@ -366,15 +366,15 @@ def current_build():
         all_mem_ids = all_mem_ids[4:]
         mem_names = []
         cursor2 = g.conn.execute(
-            'SELECT mem_name, price, module_num FROM memory WHERE {}'.format(all_mem_ids))
+            'SELECT mem_name, mem_id, price, module_num FROM memory WHERE {}'.format(all_mem_ids))
         for result2 in cursor2:
-            mem_names.append(result2['mem_name'])
+            mem_names.append((result2['mem_name'], result2['mem_id']))
             curr_price += result2['price']
             session['cur_mem_slots'] += result2['module_num']
         context['mem_name'] = mem_names
         cursor2.close()
     else:
-        context['mem_name'] = ["No memory selected"]
+        context['mem_name'] = [("No memory selected", -1)]
 
     if 'sto_ids' in session:
         all_sto_ids = ''
@@ -383,14 +383,14 @@ def current_build():
         all_sto_ids = all_sto_ids[4:]
         sto_names = []
         cursor2 = g.conn.execute(
-            'SELECT sto_name, price FROM storage WHERE {}'.format(all_sto_ids))
+            'SELECT sto_name, sto_id, price FROM storage WHERE {}'.format(all_sto_ids))
         for result2 in cursor2:
-            sto_names.append(result2['sto_name'])
+            sto_names.append((result2['sto_name'], result2['sto_id']))
             curr_price += result2['price']
         context['sto_name'] = sto_names
         cursor2.close()
     else:
-        context['sto_name'] = ["No storage selected"]
+        context['sto_name'] = [("No storage selected", -1)]
 
     context['total_cost'] = curr_price
 
