@@ -79,8 +79,8 @@ def cpu_index():
 
     all_cpus = []
     all_ids = []
-    query = 'SELECT * FROM cpu c, cpu_sockets cs WHERE cs.mobo_id = {} AND c.cpu_id = cs.cpu_id'.
-        format(session['mobo_id']) if session['socket'] else "SELECT * FROM cpu"
+    query = '''SELECT * FROM cpu c, cpu_sockets cs WHERE cs.mobo_id = {} AND c.cpu_id =
+ cs.cpu_id'''.format(session['mobo_id']) if session['socket'] else "SELECT * FROM cpu"
     cursor = g.conn.execute(query)
 
     for result in cursor:
