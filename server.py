@@ -81,7 +81,7 @@ def cpu_index():
     all_ids = []
     cursor = g.conn.execute("SELECT * FROM cpu")
     for result in cursor:
-        all_cpus.append('<td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td>'.format(
+        all_cpus.append('<td>{}</td><td>{}GHz</td><td>{}</td><td>{}W</td><td>${}</td>'.format(
             result['cpu_name'], result['speed'], result['cores'], result['tdp'], result['price']))
         all_ids.append(result['cpu_id'])
 
@@ -92,6 +92,150 @@ def cpu_index():
     # for example, the below file reads template/index.html
     #
     return render_template("cpu_index.html", **context)
+
+@app.route('/motherboard_index')
+def motherboard_index():
+    """
+    get all mobos ids and information from sql table
+    """
+
+    all_mobos = []
+    all_ids = []
+    cursor = g.conn.execute("SELECT * FROM motherboard")
+    for result in cursor:
+        all_mobos.append('<td>{}</td><td>{}</td><td>${}</td>'.format(result['mobo_name'],
+                                                                     result['ram_slots'],
+                                                                     result['price']))
+        all_ids.append(result['mobo_id'])
+
+    context = dict(mobos=zip(all_mobos, all_ids))
+
+    #
+    # render_template looks in the templates/ folder for files.
+    # for example, the below file reads template/index.html
+    #
+    return render_template("motherboard_index.html", **context)
+
+
+@app.route('/psu_index')
+def psu_index():
+    """
+    get all PSU ids and information from sql table
+    """
+
+    all_psus = []
+    all_ids = []
+    cursor = g.conn.execute("SELECT * FROM psu")
+    for result in cursor:
+        all_psus.append('<td>{}</td><td>{}</td><td>{}</td><td>{}W</td><td>{}</td><td>${}</td>'.
+                        format(result['psu_name'], result['series'], result['efficiency'],
+                               result['watts'], result['modular'], result['price']))
+        all_ids.append(result['psu_id'])
+
+    context = dict(psus=zip(all_psus, all_ids))
+
+    #
+    # render_template looks in the templates/ folder for files.
+    # for example, the below file reads template/index.html
+    #
+    return render_template("psu_index.html", **context)
+
+
+@app.route('/case_index')
+def case_index():
+    """
+    get all case ids and information from sql table
+    """
+
+    all_cases = []
+    all_ids = []
+    cursor = g.conn.execute("SELECT * FROM cases")
+    for result in cursor:
+        all_cases.append('<td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>${}</td>'.
+                         format(result['case_name'], result['type'], result['ext_bays'],
+                                result['int_bays'], result['price']))
+        all_ids.append(result['case_id'])
+
+    context = dict(cases=zip(all_cases, all_ids))
+
+    #
+    # render_template looks in the templates/ folder for files.
+    # for example, the below file reads template/index.html
+    #
+    return render_template("case_index.html", **context)
+
+
+@app.route('/gpu_index')
+def gpu_index():
+    """
+    get all GPU ids and information from sql table
+    """
+
+    all_gpus = []
+    all_ids = []
+    cursor = g.conn.execute("SELECT * FROM gpu")
+    for result in cursor:
+        all_gpus.append('''<td>{}</td><td>{}</td><td>{}</td><td>{}GHz</td><td>{}W</td><td>{}GB</td>
+<td>${}</td>'''.format(result['gpu_name'], result['series'], result['chipset'],
+                       result['core_clock'], result['tdp'], result['gpu_mem'], result['price']))
+        all_ids.append(result['gpu_id'])
+
+    context = dict(gpus=zip(all_gpus, all_ids))
+
+    #
+    # render_template looks in the templates/ folder for files.
+    # for example, the below file reads template/index.html
+    #
+    return render_template("gpu_index.html", **context)
+
+
+@app.route('/memory_index')
+def memory_index():
+    """
+    get all memory ids and information from sql table
+    """
+
+    all_mems = []
+    all_ids = []
+    cursor = g.conn.execute("SELECT * FROM memory")
+    for result in cursor:
+        all_mems.append('<td>{}</td><td>{}</td><td>{}</td><td>{}GB</td><td>{}</td><td>${}</td>'.
+                        format(result['mem_name'], result['speed'], result['cas'],
+                               result['module_size'], result['module_num'], result['price']))
+        all_ids.append(result['mem_id'])
+
+    context = dict(mems=zip(all_mems, all_ids))
+
+    #
+    # render_template looks in the templates/ folder for files.
+    # for example, the below file reads template/index.html
+    #
+    return render_template("memory_index.html", **context)
+
+
+@app.route('/storage_index')
+def storage_index():
+    """
+    get all storage ids and information from sql table
+    """
+
+    all_stos = []
+    all_ids = []
+    cursor = g.conn.execute("SELECT * FROM storage")
+    for result in cursor:
+        all_stos.append('''<td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}GB</td><td>{}</td>
+<td>${}</td>'''.format(result['sto_name'], result['series'], result['form'], result['type'],
+                       result['capacity'], result['cache'] if "{}MB".format(result['cache']) is
+                       not None else '', result['price']))
+        all_ids.append(result['sto_id'])
+
+    context = dict(stos=zip(all_stos, all_ids))
+
+    #
+    # render_template looks in the templates/ folder for files.
+    # for example, the below file reads template/index.html
+    #
+    return render_template("storage_index.html", **context)
 
 
 @app.route('/current_build')
@@ -112,7 +256,7 @@ def current_build():
             curr_price += result2['price']
         cursor2.close()
     else:
-        context['cpu_name'] = "Select a CPU"
+        context['cpu_name'] = "No CPU selected"
 
     if 'mobo_id' in session:
         cursor2 = g.conn.execute(
@@ -123,7 +267,7 @@ def current_build():
             curr_price += result2['price']
         cursor2.close()
     else:
-        context['mobo_name'] = "Select a motherboard"
+        context['mobo_name'] = "No motherboard selected"
 
     if 'psu_id' in session:
         cursor2 = g.conn.execute(
@@ -133,7 +277,7 @@ def current_build():
             curr_price += result2['price']
         cursor2.close()
     else:
-        context['psu_name'] = "Select a power supply"
+        context['psu_name'] = "No power supply selected"
 
     if 'case_id' in session:
         cursor2 = g.conn.execute(
@@ -143,12 +287,12 @@ def current_build():
             curr_price += result2['price']
         cursor2.close()
     else:
-        context['case_name'] = "Select a case"
+        context['case_name'] = "No case selected"
 
     # select names of parts using has_gpu, has_memory, and has_storage
     if 'gpu_ids' in session:
         all_gpu_ids = ''
-        for gid in gpu_ids:
+        for gid in session['gpu_ids']:
             all_gpu_ids += ' OR gpu_id = {}'.format(gid)
         all_gpu_ids = all_gpu_ids[4:]
         gpu_names = []
@@ -159,11 +303,11 @@ def current_build():
         context['gpu_name'] = gpu_names
         cursor2.close()
     else:
-        context['gpu_name'] = ["Select a GPU"]
+        context['gpu_name'] = ["No GPU selected"]
 
     if 'mem_ids' in session:
         all_mem_ids = ''
-        for mid in mem_ids:
+        for mid in session['mem_ids']:
             all_mem_ids += ' OR mem_id = {}'.format(mid)
         all_mem_ids = all_mem_ids[4:]
         mem_names = []
@@ -174,11 +318,11 @@ def current_build():
         context['mem_name'] = mem_names
         cursor2.close()
     else:
-        context['mem_name'] = ["Select memory"]
+        context['mem_name'] = ["No memory selected"]
 
     if 'sto_ids' in session:
         all_sto_ids = ''
-        for sid in sto_ids:
+        for sid in session['sto_ids']:
             all_sto_ids += ' OR sto_id = {}'.format(sid)
         all_sto_ids = all_sto_ids[4:]
         sto_names = []
@@ -189,7 +333,7 @@ def current_build():
         context['sto_name'] = sto_names
         cursor2.close()
     else:
-        context['sto_name'] = ["Select storage"]
+        context['sto_name'] = ["No storage selected"]
 
     context['total_cost'] = curr_price
 
@@ -230,6 +374,7 @@ def add_new_build():
     return redirect(url_for('current_build'))
 
 
+# ***************ADD LOGIC TO CHECK SOCKET TYPE WHEN TRYING TO ADD CPU OR MOTHERBOARD***************
 @app.route('/add_cpu', methods=['POST'])
 def add_cpu():
     """
@@ -238,6 +383,66 @@ def add_cpu():
     session['cpu_id'] = request.form['cpu_id']
     return redirect(url_for('current_build'))
 
+
+# ***************ADD LOGIC TO CHECK SOCKET TYPE WHEN TRYING TO ADD CPU OR MOTHERBOARD***************
+# ***************ADD LOGIC TO CHECK FORM FACTOR WHEN TRYING TO ADD CPU OR MOTHERBOARD***************
+@app.route('/add_mobo', methods=['POST'])
+def add_mobo():
+    """
+    add mobo to session, redirect to current_build
+    """
+    session['mobo_id'] = request.form['mobo_id']
+    return redirect(url_for('current_build'))
+
+
+# ***************ADD LOGIC TO CHECK FORM FACTOR WHEN TRYING TO ADD CPU OR MOTHERBOARD***************
+@app.route('/add_psu', methods=['POST'])
+def add_psu():
+    """
+    add psu to session, redirect to current_build
+    """
+    session['psu_id'] = request.form['psu_id']
+    return redirect(url_for('current_build'))
+
+
+# ***************ADD LOGIC TO CHECK FORM FACTOR WHEN TRYING TO ADD CPU OR MOTHERBOARD***************
+@app.route('/add_case', methods=['POST'])
+def add_case():
+    """
+    add case to session, redirect to current_build
+    """
+    session['case_id'] = request.form['case_id']
+    return redirect(url_for('current_build'))
+
+
+# ************************FOR THESE ADD TO A LIST IF NOT ALREADY INSIDE*****************************
+@app.route('/add_gpu', methods=['POST'])
+def add_gpu():
+    """
+    add gpu to session, redirect to current_build
+    """
+    session['gpu_id'] = request.form['gpu_id']
+    return redirect(url_for('current_build'))
+
+
+# ************************FOR THESE ADD TO A LIST IF NOT ALREADY INSIDE*****************************
+@app.route('/add_mem', methods=['POST'])
+def add_mem():
+    """
+    add memory to session, redirect to current_build
+    """
+    session['mem_id'] = request.form['mem_id']
+    return redirect(url_for('current_build'))
+
+
+# ************************FOR THESE ADD TO A LIST IF NOT ALREADY INSIDE*****************************
+@app.route('/add_sto', methods=['POST'])
+def add_sto():
+    """
+    add storage to session, redirect to current_build
+    """
+    session['sto_id'] = request.form['sto_id']
+    return redirect(url_for('current_build'))
 
 
 @app.route('/build_index')
@@ -337,7 +542,7 @@ def build_index():
         curr_build += "</td>"
         cursor2.close()
 
-        curr_build += "<td>{}</td>".format(curr_price)
+        curr_build += "<td>${}</td>".format(curr_price)
 
         all_builds.append(curr_build)
     cursor.close()
