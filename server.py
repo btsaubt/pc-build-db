@@ -80,7 +80,7 @@ def cpu_index():
     all_cpus = []
     all_ids = []
     query = '''SELECT * FROM cpu c, cpu_sockets cs WHERE cs.mobo_id = {} AND c.cpu_id =
- cs.cpu_id'''.format(session['mobo_id']) if 'socket' in session else "SELECT * FROM cpu"
+ cs.cpu_id'''.format(session['mobo_id']) if session['socket'] else "SELECT * FROM cpu"
     print >> sys.stderr, query
 
     cursor = g.conn.execute(query)
@@ -108,7 +108,7 @@ def motherboard_index():
     all_ids = []
 
     form_conditional = ''
-    if 'cpu_id' in session:
+    if session['form_factor']:
         if 'case_id' in session:
             form_conditional = ' AND ff.case_id = {}'.format(session['case_id'])
         if 'psu_id' in session:
