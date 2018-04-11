@@ -116,10 +116,10 @@ def motherboard_index():
             form_conditional += ' AND ff.psu_id = {}'.format(session['psu_id'])
 
     query = '''SELECT DISTINCT m.mobo_id, m.mobo_name, m.ram_slots, m.price FROM motherboard m,
- cpu_sockets cs, form_compatible ff WHERE cs.cpu_id = {} AND m.mobo_id = cs.mobo_id'''.format(
-            session['cpu_id']) if session['socket'] else "SELECT * FROM motherboard"
+ cpu_sockets cs, form_compatible ff WHERE cs.cpu_id = {} AND m.mobo_id = cs.mobo_id AND'''.format(
+            session['cpu_id']) if session['socket'] else "SELECT * FROM motherboard WHERE"
 
-    query = "{} AND ram_slots > {} {}".format(query, session['cur_mem_slots'], form_conditional)
+    query = "{} m.ram_slots > {} {}".format(query, session['cur_mem_slots'], form_conditional)
     print >> sys.stderr, query
 
     cursor = g.conn.execute(query)
@@ -157,7 +157,7 @@ def psu_index():
             form_conditional += ' {}} ff.gpu_id = {}'.format('AND' if 'case_id' in session else '',
                 session['gpu_id'])
 
-    query = '''SELECT DISTINCT p.psu_id, p.psu_name p.series, p.efficiency, p.watts, p.modular,
+    query = '''SELECT DISTINCT p.psu_id, p.psu_name, p.series, p.efficiency, p.watts, p.modular,
  p.price FROM psu p, form_compatible ff {}'''.format(form_conditional)
     print >> sys.stderr, query
 
