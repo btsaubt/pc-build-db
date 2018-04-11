@@ -3,21 +3,20 @@
 
 
   <h2>CPUs</h2>
-  <div>{{data}}</div>
   <div>
     <table style="width:100%">
       <tr>
-        <td> CPU Name </td>
-        <td> Clock Speed </td>
-        <td> # Cores </td>
-        <td> TDP </td>
-        <td> Price </td>
+        <th> CPU Name </th>
+        <th> Clock Speed </th>
+        <th> # Cores </th>
+        <th> TDP </th>
+        <th> Price </th>
       </tr>
       {% for row, id in cpus %}
         <tr> 
           {{row|safe}}
           <td>
-            <form method="POST" action="/add_cpu">
+            <form method="POST" action="{{ url_for('add_cpu') }}">
               <div> <input type="submit" value="Add to build"> <input value = "{{id}}" type="hidden" name="cpu_id"></div>
             </form>
           </td>
