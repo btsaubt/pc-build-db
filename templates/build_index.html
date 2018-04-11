@@ -7,6 +7,8 @@ table, th, td {
   width:100%;
   border: 1px solid black;
   border-collapse: collapse;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 th {
@@ -15,6 +17,7 @@ th {
 
 td {
   padding: 1px;
+
 
 }
 
@@ -29,8 +32,8 @@ td {
 </style>
 
   <h2>Builds</h2>
-
   <div id="container">
+
   <table class="buildstyle">
     <tr>
       <th>Build Name</th>
@@ -47,6 +50,7 @@ td {
       <tr> {{n|safe}} </tr>
     {% endfor %}
   </table>
+  
   </div>
 
   <form method="POST" action="{{ url_for('add_new_build') }}">

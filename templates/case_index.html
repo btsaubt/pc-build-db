@@ -5,17 +5,27 @@
   <h2>Cases</h2>
   <div>{{data}}</div>
   <div>
-    {% for n in data %}
-    <form method="POST" action="/add_build_case">
-      <div>{{n}} <input onClick="window.location.href='./build_index.html'" type="submit" value="Add to build"></div>
-    </form>
-    {% endfor %}
+    <table style="width:100%">
+      <tr>
+        <th> Case Name </th>
+        <th> Type </th>
+        <th> External Bays </th>
+        <th> Internal Bays </th>
+        <th> Price </th>
+      </tr>
+      {% for row, id in cases %}
+        <tr>
+          {{row|safe}}
+          <td>
+            <form method="POST" action="/add_case">
+              <div> <input type="submit" value="Add to build"> <input value = "{{id}}" type="hidden" name="case_id"></div>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
   </div>
 
-<p><a href="another">Return to your build</a></p>
-
-<form method="POST" action="/add_case">
-<p><input type="text" name="Build Name"> <input type="submit" value="Add"></p>
-</form>
+<p><a href="current_build">Return to your build</a></p>
 
 {% endblock %}
