@@ -16,7 +16,7 @@
         <tr> 
           {{row|safe}}
           <td>
-            <form method="POST" action="/add_cpu">
+            <form method="POST" action="{{ url_for('add_cpu') }}">
               <div> <input type="submit" value="Add to build"> <input value = "{{id}}" type="hidden" name="cpu_id"></div>
             </form>
           </td>
