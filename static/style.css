@@ -1,6 +1,6 @@
-body            { font-family: sans-serif; background: #77A6F7; font-size: 14px; }
+body            { font-family: 'Roboto' sans-serif; background: #77A6F7; font-size: 14px; }
 a, h1, h2       { color: #; }
-h1, h2          { font-family: 'Georgia', serif; margin: 0; }
+h1, h2          { font-family: 'Lato', serif; margin: 0; }
 h1              { border-bottom: 3px solid #FFD1C2; }
 h2              { font-size: 1.2em; margin-left:3em; }
 
@@ -10,12 +10,6 @@ table			{
 					table-layout: fixed; 
 					border-collapse: collapse; 
 				}
-
-table tr:nth-of-type(odd){
-
-  background-color: #D3E3FC;
-
-}
 
 
 
