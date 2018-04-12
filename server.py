@@ -387,10 +387,6 @@ def current_build():
 
     context['total_cost'] = curr_price
 
-    # context = dict(build_name=session['build_name'], cpu_name='cpu name', mobo_name='mobo name',
-    #                psu_name='psu name', case_name='case name', gpu_name='gpu name',
-    #                mem_name='memory name', sto_name='storage name', total_cost=0)
-
     return render_template("current_build.html", **context)
 
 
@@ -757,7 +753,7 @@ def build_index():
     return render_template('build_index.html', **context)
 
 
-@app.route('/add_complete_build', methods=['POST'])
+@app.route('/add_complete_build')
 def add_complete_build():
     """
     add a complete buld - check whether or not it is acceptable by sql builds table, and if so, then
@@ -789,9 +785,9 @@ def add_complete_build():
 
     # first insert into builds table
     # case is optional - so check for existence
-    query_columns = "build_id, cpu_id, mobo_id, psu_id{}".format(
+    query_columns = "build_id, build_name, cpu_id, mobo_id, psu_id{}".format(
         ', case_id' if 'case_id' in session else '')
-    query_values = "{}, {}, {}{}".format(build_id, session['cpu_id'], session['mobo_id'],
+    query_values = "{}, {}, {}, {}{}".format(build_id, session['build_name'], session['cpu_id'], session['mobo_id'],
         session['mobo_id'], ', {}'.format(session['case_id']) if 'case_id' in session else '')
 
     query = 'INSERT INTO builds ({}) VALUES ({})'.format(query_columns, query_values)
