@@ -759,25 +759,63 @@ def add_complete_build():
     add a complete buld - check whether or not it is acceptable by sql builds table, and if so, then
     add it to build; otherwise, redirect with flash error message
     """
+    incompatible_build = False
+
     if 'cpu_id' not in session:
         flash('Need to select a CPU for every build!')
-        return redirect(url_for('current_build'))
+        incompatible_build = True
+
     if 'mobo_id' not in session:
         flash('Need to select a motherboard for every build!')
-        return redirect(url_for('current_build'))
+        incompatible_build = True
+
     if 'psu_id' not in session:
         flash('Need to select a power supply for every build!')
-        return redirect(url_for('current_build'))
+        incompatible_build = True
+
     if 'mem_ids' not in session or session['mem_id'] is None:
         flash('Need to select memory for every build!')
+        incompatible_build = True
+
+    if incompatible_build:
         return redirect(url_for('current_build'))
 
     build_id = g.conn.execute('SELECT MAX(build_id) FROM builds').fetchone()['build_id'] + 1
     print >> sys.stderr, "id of type {}".format(type(build_id))
 
+    # first insert into builds table
     # case is optional - so check for existence
-    query_insert = 'INSERT INTO builds ()'
-    query_values = 
+    query_columns = "build_id, cpu_id, mobo_id, psu_id{}".format(
+        ', case_id' if 'case_id' in session else '')
+    query_values = "{}, {}, {}{}".format(build_id, session['cpu_id'], session['mobo_id'],
+        session['mobo_id'], ', {}'.format(session['case_id']) if 'case_id' in session else '')
+
+    query = 'INSERT INTO builds ({}) VALUES ({})'.format(query_columns, query_values)
+    engine.execute(query)
+
+    # now insert into has_memory
+    for mem_id in session['mem_ids']:
+        query_columns = "build_id, mem_id"
+        query_values = "{}, {}".format(build_id, mem_id)
+
+        query = 'INSERT INTO has_memory ({}) VALUES ({})'.format(query_columns, query_values)
+        engine.execute(query)
+
+    if 'gpu_ids' in session:
+        for gpu_id in session['gpu_ids']:
+            query_columns = "build_id, gpu_id"
+            query_values = "{}, {}".format(build_id, gpu_id)
+
+            query = 'INSERT INTO has_gpu ({}) VALUES ({})'.format(query_columns, query_values)
+            engine.execute(query)
+
+    if 'sto_ids' in session:
+        for sto_id in session['sto_ids']:
+            query_columns = "build_id, sto_id"
+            query_values = "{}, {}".format(build_id, sto_id)
+
+            query = 'INSERT INTO has_storage ({}) VALUES ({})'.format(query_columns, query_values)
+            engine.execute(query)
 
     return redirect(url_for('build_index'))
 
