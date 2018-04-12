@@ -366,7 +366,6 @@ def current_build():
         for result2 in cursor2:
             mem_names.append((result2['mem_name'], result2['mem_id']))
             curr_price += result2['price']
-            session['cur_mem_slots'] += result2['module_num']
         context['mem_name'] = mem_names
         cursor2.close()
 
