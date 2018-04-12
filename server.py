@@ -211,7 +211,7 @@ def gpu_index():
         for gid in session['gpu_ids']:
             all_gpu_ids += ' AND gpu_id != {}'.format(gid)
         all_gpu_ids = all_gpu_ids[4:]
-        query += " WHERE " += all_gpu_ids
+        query += " WHERE " + all_gpu_ids
 
     cursor = g.conn.execute(query)    
     for result in cursor:
@@ -265,7 +265,7 @@ def storage_index():
         for sid in session['sto_ids']:
             all_sto_ids += ' AND sto_id != {}'.format(sid)
         all_sto_ids = all_sto_ids[4:]
-        query += " WHERE " += all_sto_ids
+        query += " WHERE " + all_sto_ids
 
     cursor = g.conn.execute(query)
     for result in cursor:
