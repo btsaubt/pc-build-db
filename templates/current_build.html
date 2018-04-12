@@ -5,18 +5,19 @@
 table, td {
   width:100%;
   border: 1px solid black;
-  border-collapse: collapse;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 th {
   padding: 5px 10px;
-  background-color: #bbb;
+  background-color: #778899;
+  font-size: 1em;
 }
 
 td {
   padding: 1px;
+  border-collapse:;
 
 
 }
@@ -38,7 +39,7 @@ td {
   <div>
     <table>
       <tr>
-        <th>Part</th> <th> Part Name </th> <th> </th>
+        <th style="width:20%;">Part</th> <th style="width:60%"> Part Name </th> <th> </th>
       </tr>
       <tr>
         <td>CPU</td> <td>{{cpu_name}}</td> <td><form method="GET" action="{{ url_for('cpu_index') }}"><input type="submit" value="Select a CPU"></form></td>
