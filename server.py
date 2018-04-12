@@ -787,7 +787,7 @@ def add_complete_build():
     # case is optional - so check for existence
     query_columns = "build_id, build_name, cpu_id, mobo_id, psu_id{}".format(
         ', case_id' if 'case_id' in session else '')
-    query_values = "{}, {}, {}, {}{}".format(build_id, session['build_name'], session['cpu_id'], session['mobo_id'],
+    query_values = '{}, "{}", {}, {}{}'.format(build_id, session['build_name'], session['cpu_id'], session['mobo_id'],
         session['mobo_id'], ', {}'.format(session['case_id']) if 'case_id' in session else '')
 
     query = 'INSERT INTO builds ({}) VALUES ({})'.format(query_columns, query_values)
