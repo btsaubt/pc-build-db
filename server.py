@@ -504,8 +504,9 @@ def add_gpu():
     add gpu to session, redirect to current_build
     """
     if 'gpu_ids' not in session:
-        session['gpu_ids'] = []
-    session['gpu_ids'] = session['gpu_ids'].append(request.form['gpu_id'])
+        session['gpu_ids'] = [request.form['gpu_id']]
+    else:
+        session['gpu_ids'] = session['gpu_ids'].append(request.form['gpu_id'])
     print >> sys.stderr, session['gpu_ids']
     return redirect(url_for('current_build'))
 
@@ -520,8 +521,9 @@ def add_mem():
             request.form['mem_ids'])).fetchone()['module_num']
 
     if 'mem_ids' not in session:
-        session['mem_ids'] = []
-    session['mem_ids'] = session['mem_ids'].append(request.form['mem_id'])
+        session['mem_ids'] = [request.form['mem_id']]
+    else:
+        session['mem_ids'] = session['mem_ids'].append(request.form['mem_id'])
     return redirect(url_for('current_build'))
 
 
@@ -531,8 +533,9 @@ def add_sto():
     add storage to session, redirect to current_build
     """
     if 'sto_ids' not in session:
-        session['sto_ids'] = []
-    session['sto_ids'] = session['sto_ids'].append(request.form['sto_id'])
+        session['sto_ids'] = [request.form['sto_id']]
+    else:
+        session['sto_ids'] = session['sto_ids'].append(request.form['sto_id'])
     return redirect(url_for('current_build'))
 
 
