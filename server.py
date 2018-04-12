@@ -494,36 +494,39 @@ def add_case():
     return redirect(url_for('current_build'))
 
 
-# ************************FOR THESE ADD TO A LIST IF NOT ALREADY INSIDE*****************************
 @app.route('/add_gpu', methods=['POST'])
 def add_gpu():
     """
     add gpu to session, redirect to current_build
     """
-    session['gpu_id'] = request.form['gpu_id']
+    if 'gpu_id' not in session:
+        session['gpu_id'] = []
+    session['gpu_id'].append(request.form['gpu_id'])
     return redirect(url_for('current_build'))
 
 
-# ************************FOR THESE ADD TO A LIST IF NOT ALREADY INSIDE*****************************
 @app.route('/add_mem', methods=['POST'])
 def add_mem():
     """
     add memory to session, redirect to current_build
     """
-    session['mem_id'] = request.form['mem_id']
+    if 'mem_id' not in session:
+        session['mem_id'] = []
+    session['mem_id'].append(request.form['mem_id'])
     session['cur_mem_slots'] += g.conn.execute(
         'SELECT module_num FROM memory WHERE mem_id = {}'.format(
             request.form['mem_id'])).fetchone()['module_num']
     return redirect(url_for('current_build'))
 
 
-# ************************FOR THESE ADD TO A LIST IF NOT ALREADY INSIDE*****************************
 @app.route('/add_sto', methods=['POST'])
 def add_sto():
     """
     add storage to session, redirect to current_build
     """
-    session['sto_id'] = request.form['sto_id']
+    if 'sto_id' not in session:
+        session['sto_id'] = []
+    session['sto_id'].append(request.form['sto_id'])
     return redirect(url_for('current_build'))
 
 
