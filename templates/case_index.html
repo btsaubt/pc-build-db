@@ -17,7 +17,7 @@
         <tr>
           {{row|safe}}
           <td>
-            <form method="POST" action="/add_case">
+            <form method="POST" action="{{ url_for('add_case') }}">
               <div> <input type="submit" value="Add to build"> <input value = "{{id}}" type="hidden" name="case_id"></div>
             </form>
           </td>
