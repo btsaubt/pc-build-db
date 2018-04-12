@@ -1,13 +1,49 @@
 {% extends "layout.html" %}
 {% block body %}
 
+<style>
+table, td {
+  width:100%;
+  border: 1px solid black;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+th {
+  padding-left: 10px;
+  background-color: #778899;
+  font-size: 1em;
+}
+
+td {
+  padding: 1px;
+  border-collapse:;
+
+
+}
+
+#smaller{
+  font-size:80%;
+}
+
+#container {
+
+  width: inherit;+
+  height: inherit;
+  margin: 3em;
+
+}
+
+</style>
+
+
   <h2>Your Build - {{build_name}}</h2>
 
   
   <div>
     <table>
       <tr>
-        <th>Part</th> <th> Part Name </th> <th> </th>
+        <th style="width:20%;">Part</th> <th style="width:60%;"> Part Name </th> <th> </th>
       </tr>
       <tr>
         <td>CPU</td>
@@ -125,7 +161,7 @@
       {% endfor %}
 
       <tr>
-        <td>Total Cost</td> <td>${{total_cost}}</td>
+        <td class="smaller">Total Cost</td> <td>${{total_cost}}</td>
       </tr>
     </table>
   </div>
