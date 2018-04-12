@@ -32,14 +32,6 @@ DATABASEURI = "postgresql://kf2448:2558@35.227.79.146/proj1part2"
 engine = create_engine(DATABASEURI)
 
 
-# engine.execute("""CREATE TABLE IF NOT EXISTS test (
-#   id serial,
-#   name text
-# );""")
-# engine.execute("""INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'),
-# ('ada lovelace');""")
-
-
 @app.before_request
 def before_request():
     """
@@ -76,7 +68,6 @@ def cpu_index():
     """
     get all CPU ids and information from sql table - if socket correct
     """
-
     all_cpus = []
     all_ids = []
     query = '''SELECT DISTINCT c.cpu_id, c.cpu_name, c.speed, c.cores, c.tdp, c.price FROM cpu c,
@@ -92,10 +83,6 @@ def cpu_index():
 
     context = dict(cpus=zip(all_cpus, all_ids))
 
-    #
-    # render_template looks in the templates/ folder for files.
-    # for example, the below file reads template/index.html
-    #
     return render_template("cpu_index.html", **context)
 
 
@@ -104,7 +91,6 @@ def motherboard_index():
     """
     get all mobos ids and information from sql table
     """
-
     all_mobos = []
     all_ids = []
 
@@ -130,12 +116,6 @@ def motherboard_index():
         if 'psu_id' in session:
             query_where +=  " AND ff.psu_id = {}".format(session['psu_id'])
 
-     #FROM motherboard m,
-#  cpu_sockets cs, form_compatible ff WHERE cs.cpu_id = {} AND m.mobo_id = cs.mobo_id AND'''.format(
-#      session['cpu_id']) if session['socket'] else '''SELECT DISTINCT 
-# ''' if session['form_factor'] else "SELECT * FROM motherboard m WHERE"
-
-    # query = "{} {}".format(query, session['cur_mem_slots'], form_conditional)
     query = '{}{}{}'.format(query_select, query_from, query_where)
     print >> sys.stderr, query
 
@@ -148,10 +128,6 @@ def motherboard_index():
 
     context = dict(mobos=zip(all_mobos, all_ids))
 
-    #
-    # render_template looks in the templates/ folder for files.
-    # for example, the below file reads template/index.html
-    #
     return render_template("motherboard_index.html", **context)
 
 
@@ -160,10 +136,8 @@ def psu_index():
     """
     get all PSU ids and information from sql table
     """
-
     all_psus = []
     all_ids = []
-
 
     form_conditional = ''
     if session['form_factor']:
@@ -187,10 +161,6 @@ def psu_index():
 
     context = dict(psus=zip(all_psus, all_ids))
 
-    #
-    # render_template looks in the templates/ folder for files.
-    # for example, the below file reads template/index.html
-    #
     return render_template("psu_index.html", **context)
 
 
@@ -199,7 +169,6 @@ def case_index():
     """
     get all case ids and information from sql table
     """
-
     all_cases = []
     all_ids = []
 
@@ -226,10 +195,6 @@ def case_index():
 
     context = dict(cases=zip(all_cases, all_ids))
 
-    #
-    # render_template looks in the templates/ folder for files.
-    # for example, the below file reads template/index.html
-    #
     return render_template("case_index.html", **context)
 
 
@@ -238,10 +203,17 @@ def gpu_index():
     """
     get all GPU ids and information from sql table
     """
-
     all_gpus = []
     all_ids = []
-    cursor = g.conn.execute("SELECT * FROM gpu")
+    query = "SELECT * FROM gpu"
+    if 'gpu_ids' in session:
+        all_gpu_ids = ''
+        for gid in session['gpu_ids']:
+            all_gpu_ids += ' AND gpu_id != {}'.format(gid)
+        all_gpu_ids = all_gpu_ids[4:]
+        query += " WHERE " + all_gpu_ids
+
+    cursor = g.conn.execute(query)    
     for result in cursor:
         all_gpus.append('''<td>{}</td><td>{}</td><td>{}</td><td>{}GHz</td><td>{}W</td><td>{}GB</td>
 <td>${}</td>'''.format(result['gpu_name'], result['series'], result['chipset'],
@@ -250,10 +222,6 @@ def gpu_index():
 
     context = dict(gpus=zip(all_gpus, all_ids))
 
-    #
-    # render_template looks in the templates/ folder for files.
-    # for example, the below file reads template/index.html
-    #
     return render_template("gpu_index.html", **context)
 
 
@@ -262,11 +230,16 @@ def memory_index():
     """
     get all memory ids and information from sql table
     """
-
     all_mems = []
     all_ids = []
-    cursor = g.conn.execute("SELECT * FROM memory WHERE module_num < {}".format(
-        session['max_mem_slots'] - session['cur_mem_slots']))
+    query = "SELECT * FROM memory WHERE module_num <= {}".format(
+        session['max_mem_slots'] - session['cur_mem_slots'])
+
+    if 'mem_ids' in session:
+        for mid in session['mem_ids']:
+            query += ' AND mem_id != {}'.format(mid)
+
+    cursor = g.conn.execute(query)
     for result in cursor:
         all_mems.append('<td>{}</td><td>{}</td><td>{}</td><td>{}GB</td><td>{}</td><td>${}</td>'.
                         format(result['mem_name'], result['speed'], result['cas'],
@@ -275,10 +248,6 @@ def memory_index():
 
     context = dict(mems=zip(all_mems, all_ids))
 
-    #
-    # render_template looks in the templates/ folder for files.
-    # for example, the below file reads template/index.html
-    #
     return render_template("memory_index.html", **context)
 
 
@@ -287,10 +256,18 @@ def storage_index():
     """
     get all storage ids and information from sql table
     """
-
     all_stos = []
     all_ids = []
-    cursor = g.conn.execute("SELECT * FROM storage")
+    query = "SELECT * FROM storage WHERE"
+
+    if 'sto_ids' in session:
+        all_sto_ids = ''
+        for sid in session['sto_ids']:
+            all_sto_ids += ' AND sto_id != {}'.format(sid)
+        all_sto_ids = all_sto_ids[4:]
+        query += " WHERE " + all_sto_ids
+
+    cursor = g.conn.execute(query)
     for result in cursor:
         all_stos.append('''<td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}GB</td><td>{}</td>
 <td>${}</td>'''.format(result['sto_name'], result['series'], result['form'], result['type'],
@@ -300,10 +277,6 @@ def storage_index():
 
     context = dict(stos=zip(all_stos, all_ids))
 
-    #
-    # render_template looks in the templates/ folder for files.
-    # for example, the below file reads template/index.html
-    #
     return render_template("storage_index.html", **context)
 
 
@@ -360,13 +333,15 @@ def current_build():
         context['case_name'] = "No case selected"
 
     # select names of parts using has_gpu, has_memory, and has_storage
-    if 'gpu_ids' in session:
+    if 'gpu_ids' not in session or session['gpu_ids'] is None:
+        context['gpu_name'] = [("No graphics card selected", -1)]
+    else:
         all_gpu_ids = ''
-        print >> sys.stderr, "gpu start"
+        # print >> sys.stderr, "session gpu_ids in current_build: {}".format(session['gpu_ids'])
         for gid in session['gpu_ids']:
             all_gpu_ids += ' OR gpu_id = {}'.format(gid)
-            print >> sys.stderr, all_gpu_ids
-        print >> sys.stderr, "gpu done"
+            # print >> sys.stderr, "another gpu_id: {}".format(gid)
+        # print >> sys.stderr, "all gpu ids query: {}".format(all_gpu_ids)
         all_gpu_ids = all_gpu_ids[4:]
         gpu_names = []
         cursor2 = g.conn.execute(
@@ -375,12 +350,12 @@ def current_build():
             gpu_names.append((result2['gpu_name'], result2['gpu_id']))
             curr_price += result2['price']
         context['gpu_name'] = gpu_names
-        print >> sys.stderr, gpu_names
+        print >> sys.stderr, "gpu names: {}".format(gpu_names)
         cursor2.close()
-    else:
-        context['gpu_name'] = [("No graphics card selected", -1)]
 
-    if 'mem_ids' in session:
+    if 'mem_ids' not in session or session['mem_ids'] is None:
+        context['mem_name'] = [("No memory selected", -1)]
+    else:
         all_mem_ids = ''
         for mid in session['mem_ids']:
             all_mem_ids += ' OR mem_id = {}'.format(mid)
@@ -394,10 +369,10 @@ def current_build():
             session['cur_mem_slots'] += result2['module_num']
         context['mem_name'] = mem_names
         cursor2.close()
-    else:
-        context['mem_name'] = [("No memory selected", -1)]
 
-    if 'sto_ids' in session:
+    if 'sto_ids' not in session or session['sto_ids'] is None:
+        context['sto_name'] = [("No storage selected", -1)]
+    else:
         all_sto_ids = ''
         for sid in session['sto_ids']:
             all_sto_ids += ' OR sto_id = {}'.format(sid)
@@ -410,8 +385,6 @@ def current_build():
             curr_price += result2['price']
         context['sto_name'] = sto_names
         cursor2.close()
-    else:
-        context['sto_name'] = [("No storage selected", -1)]
 
     context['total_cost'] = curr_price
 
@@ -432,7 +405,7 @@ def add_new_build():
     session['build_name'] = request.form['BuildName']
     # check if this fails if cpu_id is already nonexistent/popped
 
-    print >> sys.stderr, 'trying to build {}'.format(session['build_name'])
+    print >> sys.stderr, 'starting new build {}'.format(session['build_name'])
 
     if 'cpu_id' in session:
         session.pop('cpu_id', None)
@@ -444,6 +417,7 @@ def add_new_build():
         session.pop('case_id', None)
     if 'gpu_ids' in session:
         session.pop('gpu_ids', None)
+        print >> sys.stderr, 'gpu ids popped in add new build'
     if 'mem_ids' in session:
         session.pop('mem_ids', None)
     if 'sto_ids' in session:
@@ -452,6 +426,8 @@ def add_new_build():
     session['cur_mem_slots'] = 0
     session['socket'] = False
     session['form_factor'] = False
+
+    session.modified = True
 
     return redirect(url_for('current_build'))
 
@@ -463,6 +439,9 @@ def add_cpu():
     """
     session['cpu_id'] = request.form['cpu_id']
     session['socket'] = True
+
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -475,6 +454,8 @@ def add_mobo():
     session['socket'] = True
     session['form_factor'] = True
 
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -485,6 +466,9 @@ def add_psu():
     """
     session['psu_id'] = request.form['psu_id']
     session['form_factor'] = True
+
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -495,6 +479,9 @@ def add_case():
     """
     session['case_id'] = request.form['case_id']
     session['form_factor'] = True
+
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -503,10 +490,16 @@ def add_gpu():
     """
     add gpu to session, redirect to current_build
     """
-    if 'gpu_ids' not in session:
-        session['gpu_ids'] = []
-    session['gpu_ids'] = session['gpu_ids'].append(request.form['gpu_id'])
-    print >> sys.stderr, session['gpu_ids']
+    if 'gpu_ids' not in session or session['gpu_ids'] is None:
+        print >> sys.stderr, "gpu_ids currently empty in session"
+        session['gpu_ids'] = [request.form['gpu_id']]
+    else:
+        print >> sys.stderr, "gpu ids in session before add_gpu: {}".format(session['gpu_ids'])
+        session['gpu_ids'].append(request.form['gpu_id'])
+    print >> sys.stderr, "gpu ids in session after add_gpu: {}".format(session['gpu_ids'])
+
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -519,9 +512,13 @@ def add_mem():
         'SELECT module_num FROM memory WHERE mem_id = {}'.format(
             request.form['mem_ids'])).fetchone()['module_num']
 
-    if 'mem_ids' not in session:
-        session['mem_ids'] = []
-    session['mem_ids'] = session['mem_ids'].append(request.form['mem_id'])
+    if 'mem_ids' not in session or session['mem_ids'] is None:
+        session['mem_ids'] = [request.form['mem_id']]
+    else:
+        session['mem_ids'].append(request.form['mem_id'])
+
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -530,9 +527,13 @@ def add_sto():
     """
     add storage to session, redirect to current_build
     """
-    if 'sto_ids' not in session:
-        session['sto_ids'] = []
-    session['sto_ids'] = session['sto_ids'].append(request.form['sto_id'])
+    if 'sto_ids' not in session or session['sto_ids'] is None:
+        session['sto_ids'] = [request.form['sto_id']]
+    else:
+        session['sto_ids'].append(request.form['sto_id'])
+
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -544,6 +545,9 @@ def remove_cpu():
     session.pop('cpu_id', None)
     if 'mobo_id' not in session:
         session['socket'] = False
+
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -558,6 +562,9 @@ def remove_mobo():
     if 'psu_id' not in session and 'case_id' not in session:
         session['form_factor'] = False
     session['max_mem_slots'] = 8
+
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -569,6 +576,9 @@ def remove_psu():
     session.pop('psu_id', None)
     if 'mobo_id' not in session and 'case_id' not in session:
         session['form_factor'] = False
+
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -580,6 +590,9 @@ def remove_case():
     session.pop('case_id', None)
     if 'mobo_id' not in session and 'psu_id' not in session:
         session['form_factor'] = False
+
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -592,6 +605,11 @@ def remove_gpu():
         session.pop('gpu_ids', None)
     else:
         session['gpu_ids'].remove(request.form['gpu_id'])
+    # print >> sys.stderr, "removed gpu id {} from session".format(request.form['gpu_id'])
+    # print >> sys.stderr, "new gpu ids after removal: {}".format(session['gpu_ids'])
+
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -608,6 +626,8 @@ def remove_mem():
         'SELECT module_num FROM memory WHERE mem_id = {}'.format(
             request.form['mem_id'])).fetchone()['module_num']
 
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -620,6 +640,9 @@ def remove_sto():
         session.pop('sto_ids', None)
     else:
         session['sto_ids'].remove(request.form['sto_id'])
+
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -636,7 +659,7 @@ def build_index():
     """
 
     # DEBUG: this is debugging code to see what request looks like
-    print request.args
+    # print request.args
 
     # let us grab all builds from database and build a table row:
     all_builds = []
@@ -727,11 +750,75 @@ def build_index():
 
     context = dict(builds=all_builds, build_ids=all_build_ids)
 
-    #
-    # render_template looks in the templates/ folder for files.
-    # for example, the below file reads template/index.html
-    #
-    return render_template("build_index.html", **context)
+    return render_template('build_index.html', **context)
+
+
+@app.route('/add_complete_build', methods=['POST'])
+def add_complete_build():
+    """
+    add a complete buld - check whether or not it is acceptable by sql builds table, and if so, then
+    add it to build; otherwise, redirect with flash error message
+    """
+    incompatible_build = False
+
+    if 'cpu_id' not in session:
+        flash('Need to select a CPU for every build!')
+        incompatible_build = True
+
+    if 'mobo_id' not in session:
+        flash('Need to select a motherboard for every build!')
+        incompatible_build = True
+
+    if 'psu_id' not in session:
+        flash('Need to select a power supply for every build!')
+        incompatible_build = True
+
+    if 'mem_ids' not in session or session['mem_id'] is None:
+        flash('Need to select memory for every build!')
+        incompatible_build = True
+
+    if incompatible_build:
+        return redirect(url_for('current_build'))
+
+    build_id = g.conn.execute('SELECT MAX(build_id) FROM builds').fetchone()['build_id'] + 1
+    print >> sys.stderr, "id of type {}".format(type(build_id))
+
+    # first insert into builds table
+    # case is optional - so check for existence
+    query_columns = "build_id, cpu_id, mobo_id, psu_id{}".format(
+        ', case_id' if 'case_id' in session else '')
+    query_values = "{}, {}, {}{}".format(build_id, session['cpu_id'], session['mobo_id'],
+        session['mobo_id'], ', {}'.format(session['case_id']) if 'case_id' in session else '')
+
+    query = 'INSERT INTO builds ({}) VALUES ({})'.format(query_columns, query_values)
+    engine.execute(query)
+
+    # now insert into has_memory
+    for mem_id in session['mem_ids']:
+        query_columns = "build_id, mem_id"
+        query_values = "{}, {}".format(build_id, mem_id)
+
+        query = 'INSERT INTO has_memory ({}) VALUES ({})'.format(query_columns, query_values)
+        engine.execute(query)
+
+    if 'gpu_ids' in session:
+        for gpu_id in session['gpu_ids']:
+            query_columns = "build_id, gpu_id"
+            query_values = "{}, {}".format(build_id, gpu_id)
+
+            query = 'INSERT INTO has_gpu ({}) VALUES ({})'.format(query_columns, query_values)
+            engine.execute(query)
+
+    if 'sto_ids' in session:
+        for sto_id in session['sto_ids']:
+            query_columns = "build_id, sto_id"
+            query_values = "{}, {}".format(build_id, sto_id)
+
+            query = 'INSERT INTO has_storage ({}) VALUES ({})'.format(query_columns, query_values)
+            engine.execute(query)
+
+    return redirect(url_for('build_index'))
+
 
 
 @app.route('/login', methods=['GET', 'POST'])

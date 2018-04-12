@@ -44,7 +44,11 @@ td {
   <div>
     <table>
       <tr>
+<<<<<<< HEAD
         <th style="width:20%;">Part</th> <th style="width:60%;"> Part Name </th> <th> </th><th> </th>
+=======
+        <th style="width:20%;">Part</th> <th style="width:40%;"> Part Name </th> <th> </th> <th> </th>
+>>>>>>> master
       </tr>
       <tr>
         <td>CPU</td> <td>{{cpu_name}}</td> <td><form method="GET" action="{{ url_for('cpu_index') }}"><input type="submit" value="Select a CPU"></form></td><td></td>
@@ -79,12 +83,91 @@ td {
         {% endfor %}</td>
         <td><form method="GET" action="{{ url_for('storage_index') }}"><input type="submit" value="Select storage"></form></td><td></td>
       </tr>
+<<<<<<< HEAD
       <tr>
         <td>Total Cost</td> <td>${{total_cost}}</td>
+=======
+
+      {% for gpu_n, gpu_i in gpu_name %}
+        {% if loop.index == 1 %}
+          <tr>
+            <td>Graphics Card</td>
+            <td>{{ gpu_n }}</td>
+            <td>
+              {% if gpu_n != "No graphics card selected" %}
+                <form method="POST" action="{{ url_for('remove_gpu') }}"><input type="submit" value="Remove from build"><input value = "{{gpu_i}}" type="hidden" name="gpu_id"></form>
+              {% endif %}
+            </td>
+            <td><form method="GET" action="{{ url_for('gpu_index') }}"><input type="submit" value="Add a graphics card"></form></td>
+          </tr>
+        {% else %}
+          <tr>
+            <td></td>
+            <td>{{ gpu_n }}</td>
+            <td>
+              <form method="POST" action="{{ url_for('remove_gpu') }}"><input type="submit" value="Remove from build"><input value = "{{gpu_i}}" type="hidden" name="gpu_id"></form>
+            </td>
+            <td></td>
+          </tr>
+        {% endif %}
+      {% endfor %}
+
+      {% for mem_n, mem_i in mem_name %}
+        {% if loop.index == 1 %}
+          <tr>
+            <td>Memory</td>
+            <td>{{ mem_n }}</td>
+            <td>
+              {% if mem_n != "No memory selected" %}
+                <form method="POST" action="{{ url_for('remove_mem') }}"><input type="submit" value="Remove from build"><input value = "{{mem_i}}" type="hidden" name="mem_id"></form>
+              {% endif %}
+            </td>
+            <td><form method="GET" action="{{ url_for('memory_index') }}"><input type="submit" value="Add memory"></form></td>
+          </tr>
+        {% else %}
+          <tr>
+            <td></td>
+            <td>{{ mem_n }}</td>
+            <td>
+              <form method="POST" action="{{ url_for('remove_mem') }}"><input type="submit" value="Remove from build"><input value = "{{mem_i}}" type="hidden" name="mem_id"></form>
+            </td>
+            <td></td>
+          </tr>
+        {% endif %}
+      {% endfor %}
+
+      {% for sto_n, sto_i in sto_name %}
+        {% if loop.index == 1 %}
+          <tr>
+            <td>Storage</td>
+            <td>{{ sto_n }}</td>
+            <td>
+              {% if sto_n != "No storage selected" %}
+                <form method="POST" action="{{ url_for('remove_sto') }}"><input type="submit" value="Remove from build"><input value = "{{sto_i}}" type="hidden" name="sto_id"></form>
+              {% endif %}
+            </td>
+            <td><form method="GET" action="{{ url_for('storage_index') }}"><input type="submit" value="Add storage"></form></td>
+          </tr>
+        {% else %}
+          <tr>
+            <td></td>
+            <td>{{ sto_n }}</td>
+            <td>
+              <form method="POST" action="{{ url_for('remove_sto') }}"><input type="submit" value="Remove from build"><input value = "{{sto_i}}" type="hidden" name="sto_id"></form>
+            </td>
+            <td></td>
+          </tr>
+        {% endif %}
+      {% endfor %}
+
+      <tr>
+        <td class="smaller">Total Cost</td> <td></td> <td></td> <td>${{total_cost}}</td>
+>>>>>>> master
       </tr>
     </table>
   </div>
 
+<p> <a href="{{ url_for('add_complete_build') }}">Submit your build</a> </p>
 <p> <a href="{{ url_for('build_index') }}">Return to all builds</a> </p>
 
 <!-- <form method="POST" action="/add_complete_build">

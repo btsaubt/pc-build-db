@@ -18,7 +18,7 @@
         <tr>
           {{row|safe}}
           <td>
-            <form method="POST" action="/add_sto">
+            <form method="POST" action="{{ url_for('add_sto') }}">
               <div> <input type="submit" value="Add to build"> <input value = "{{id}}" type="hidden" name="sto_id"></div>
             </form>
           </td>
