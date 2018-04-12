@@ -1,6 +1,37 @@
 {% extends "layout.html" %}
 {% block body %}
 
+<style>
+table, th, td {
+  width:100%;
+  border: 1px solid black;
+  border-collapse: collapse;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+th {
+  padding: 5px 10px;
+  color: #bbb;
+}
+
+td {
+  padding: 1px;
+
+
+}
+
+#container {
+
+  width: inherit;+
+  height: inherit;
+  margin: 2em;
+
+}
+
+</style>
+
+
   <h2>Your Build - {{build_name}}</h2>
 
   
