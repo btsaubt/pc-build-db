@@ -509,6 +509,7 @@ def add_mem():
     """
     num_mod = g.conn.execute('SELECT module_num FROM memory WHERE mem_id = {}'.format(
                              request.form['mem_id'])).fetchone()['module_num']
+    print >> sys.stderr, "memory slots to add: {}".format(num_mod)
     session['cur_mem_slots'] += num_mod
     print >> sys.stderr, "current memory slots after add_mem is now {}".format(session['cur_mem_slots'])
 
@@ -623,6 +624,7 @@ def remove_mem():
     else:
         session['mem_ids'].remove(request.form['mem_id'])
 
+    print >> sys.stderr, "current memory slots before remove_mem is now {}".format(session['cur_mem_slots'])
     session['cur_mem_slots'] -= g.conn.execute(
         'SELECT module_num FROM memory WHERE mem_id = {}'.format(
             request.form['mem_id'])).fetchone()['module_num']
