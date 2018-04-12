@@ -590,8 +590,8 @@ def remove_gpu():
         session.pop('gpu_ids', None)
     else:
         session['gpu_ids'].remove(request.form['gpu_id'])
-    print >> sys.stderr, "removed gpu id {} from session".format(request.form['gpu_id'])
-    print >> sys.stderr, "new gpu ids after removal: {}".format(session['gpu_ids'])
+    # print >> sys.stderr, "removed gpu id {} from session".format(request.form['gpu_id'])
+    # print >> sys.stderr, "new gpu ids after removal: {}".format(session['gpu_ids'])
 
     session.modified = True
 
@@ -735,7 +735,36 @@ def build_index():
 
     context = dict(builds=all_builds, build_ids=all_build_ids)
 
-    return render_template("build_index.html", **context)
+    return render_template(url_for('build_index'), **context)
+
+
+@app.route('/add_complete_build', methods=['POST'])
+def add_complete_build():
+    """
+    add a complete buld - check whether or not it is acceptable by sql builds table, and if so, then
+    add it to build; otherwise, redirect with flash error message
+    """
+    if 'cpu_id' not in session:
+        flash('Need to select a CPU for every build!')
+        return redirect(url_for('current_build'))
+    if 'mobo_id' not in session:
+        flash('Need to select a motherboard for every build!')
+        return redirect(url_for('current_build'))
+    if 'psu_id' not in session:
+        flash('Need to select a power supply for every build!')
+        return redirect(url_for('current_build'))
+    if 'mem_ids' not in session or session['mem_id'] is None:
+        flash('Need to select memory for every build!')
+        return redirect(url_for('current_build'))
+
+    build_id = g.conn.execute('SELECT MAX(build_id) FROM builds').fetchone()['build_id']
+
+    # case is optional - so check for existence
+    query_insert = 'INSERT INTO builds ()'
+    query_values = 
+
+    return redirect(url_for('build_index'))
+
 
 
 @app.route('/login', methods=['GET', 'POST'])
