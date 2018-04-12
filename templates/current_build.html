@@ -24,7 +24,7 @@ td {
 }
 
 #smaller{
-  font-size: ;
+  font-size: smaller;
 }
 
 #container {
@@ -47,7 +47,7 @@ td {
         <th style="width:20%;">Part</th> <th style="width:60%;"> Part Name </th> <th> </th>
       </tr>
       <tr>
-        <td>CPU</td>
+        <td class="smaller">CPU</td>
         <td>{{cpu_name}}</td>
         <td>
           {% if cpu_name != "No CPU selected" %}
@@ -58,7 +58,7 @@ td {
       </tr>
 
       <tr>
-        <td>Motherboard</td>
+        <td class="smaller">Motherboard</td>
         <td>{{mobo_name}}</td>
         <td>
           {% if mobo_name != "No motherboard selected" %}
@@ -69,7 +69,7 @@ td {
       </tr>
 
       <tr>
-        <td>Power Supply</td>
+        <td class="smaller">Power Supply</td>
         <td>{{psu_name}}</td>
         <td>
           {% if psu_name != "No power supply selected" %}
@@ -79,7 +79,7 @@ td {
         <td><form method="GET" action="{{ url_for('psu_index') }}"><input type="submit" value="Select a power supply"></form></td>
       </tr>
       <tr>
-        <td>Case</td>
+        <td class="smaller">Case</td>
         <td>{{case_name}}</td>
         <td>
           {% if case_name != "No case selected" %}
@@ -92,7 +92,7 @@ td {
       {% for gpu_n, gpu_i in gpu_name %}
         {% if loop.index == 1 %}
           <tr>
-            <td>Graphics Card</td>
+            <td class="smaller">Graphics Card</td>
             <td>{{ gpu_n }}</td>
             <td>
               {% if gpu_n != "No graphics card selected" %}
@@ -116,7 +116,7 @@ td {
       {% for mem_n, mem_i in mem_name %}
         {% if loop.index == 1 %}
           <tr>
-            <td>Memory</td>
+            <td class="smaller">Memory</td>
             <td>{{ mem_n }}</td>
             <td>
               {% if mem_n != "No memory selected" %}
@@ -140,7 +140,7 @@ td {
       {% for sto_n, sto_i in sto_name %}
         {% if loop.index == 1 %}
           <tr>
-            <td>Storage</td>
+            <td class="smaller">Storage</td>
             <td>{{ sto_n }}</td>
             <td>
               {% if sto_n != "No storage selected" %}
@@ -162,7 +162,7 @@ td {
       {% endfor %}
 
       <tr>
-        <td class="smaller">Total Cost</td> <td>${{total_cost}}</td>
+        <td style="font: italic bold 15px">Total Cost</td> <td>${{total_cost}}</td>
       </tr>
     </table>
   </div>
