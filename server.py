@@ -412,6 +412,8 @@ def add_new_build():
     session['socket'] = False
     session['form_factor'] = False
 
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -422,6 +424,9 @@ def add_cpu():
     """
     session['cpu_id'] = request.form['cpu_id']
     session['socket'] = True
+
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -434,6 +439,8 @@ def add_mobo():
     session['socket'] = True
     session['form_factor'] = True
 
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -444,6 +451,9 @@ def add_psu():
     """
     session['psu_id'] = request.form['psu_id']
     session['form_factor'] = True
+
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -454,6 +464,9 @@ def add_case():
     """
     session['case_id'] = request.form['case_id']
     session['form_factor'] = True
+
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -469,6 +482,9 @@ def add_gpu():
         print >> sys.stderr, "gpu ids in session before add_gpu: {}".format(session['gpu_ids'])
         session['gpu_ids'].append(request.form['gpu_id'])
     print >> sys.stderr, "gpu ids in session after add_gpu: {}".format(session['gpu_ids'])
+
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -485,6 +501,9 @@ def add_mem():
         session['mem_ids'] = [request.form['mem_id']]
     else:
         session['mem_ids'].append(request.form['mem_id'])
+
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -497,6 +516,9 @@ def add_sto():
         session['sto_ids'] = [request.form['sto_id']]
     else:
         session['sto_ids'].append(request.form['sto_id'])
+
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -508,6 +530,9 @@ def remove_cpu():
     session.pop('cpu_id', None)
     if 'mobo_id' not in session:
         session['socket'] = False
+
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -522,6 +547,9 @@ def remove_mobo():
     if 'psu_id' not in session and 'case_id' not in session:
         session['form_factor'] = False
     session['max_mem_slots'] = 8
+
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -533,6 +561,9 @@ def remove_psu():
     session.pop('psu_id', None)
     if 'mobo_id' not in session and 'case_id' not in session:
         session['form_factor'] = False
+
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -544,6 +575,9 @@ def remove_case():
     session.pop('case_id', None)
     if 'mobo_id' not in session and 'psu_id' not in session:
         session['form_factor'] = False
+
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -558,6 +592,9 @@ def remove_gpu():
         session['gpu_ids'].remove(request.form['gpu_id'])
     print >> sys.stderr, "removed gpu id {} from session".format(request.form['gpu_id'])
     print >> sys.stderr, "new gpu ids after removal: {}".format(session['gpu_ids'])
+
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -574,6 +611,8 @@ def remove_mem():
         'SELECT module_num FROM memory WHERE mem_id = {}'.format(
             request.form['mem_id'])).fetchone()['module_num']
 
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
@@ -586,6 +625,9 @@ def remove_sto():
         session.pop('sto_ids', None)
     else:
         session['sto_ids'].remove(request.form['sto_id'])
+
+    session.modified = True
+
     return redirect(url_for('current_build'))
 
 
