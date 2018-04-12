@@ -508,9 +508,10 @@ def add_mem():
     """
     add memory to session, redirect to current_build
     """
+    print >> sys.stderr, "adding memory with id {}".format(request.form['mem_id'])
     num_mod = g.conn.execute('SELECT module_num FROM memory WHERE mem_id = {}'.format(
-                             request.form['mem_ids'])).fetchone()['module_num']
-    print >> sys.stderr, "num modues: {}".format(num_mod)
+                             request.form['mem_id'])).fetchone()['module_num']
+    print >> sys.stderr, "num modules: {}".format(num_mod)
     session['cur_mem_slots'] += num_mod
 
     if 'mem_ids' not in session or session['mem_ids'] is None:
