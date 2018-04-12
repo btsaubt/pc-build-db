@@ -169,9 +169,9 @@ def psu_index():
     if session['form_factor']:
         form_conditional = 'WHERE '
         if 'case_id' in session:
-            form_conditional = 'ff.case_id = {}'.format(session['case_id'])
+            form_conditional += 'ff.case_id = {}'.format(session['case_id'])
         if 'mobo_id' in session:
-            form_conditional += ' {} ff.mobo_id = {}'.format('AND' if 'case_id' in session else '',
+            form_conditional += '{} ff.mobo_id = {}'.format('AND' if 'case_id' in session else '',
                                                              session['mobo_id'])
 
     query = '''SELECT DISTINCT p.psu_id, p.psu_name, p.series, p.efficiency, p.watts, p.modular,
