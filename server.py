@@ -596,6 +596,8 @@ def remove_gpu():
         session.pop('gpu_ids', None)
     else:
         session['gpu_ids'].remove(request.form['gpu_id'])
+    print >> sys.stderr, "removed gpu id {} from session".format(request.form['gpu_id'])
+    print >> sys.stderr, "new gpu ids: {}".format(gpu_ids)
     return redirect(url_for('current_build'))
 
 
