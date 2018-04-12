@@ -24,7 +24,7 @@ td {
 }
 
 #smaller{
-  font-size: smaller;
+  font-size: ;
 }
 
 #container {
@@ -47,122 +47,40 @@ td {
         <th style="width:20%;">Part</th> <th style="width:60%;"> Part Name </th> <th> </th>
       </tr>
       <tr>
-        <td class="smaller">CPU</td>
-        <td>{{cpu_name}}</td>
-        <td>
-          {% if cpu_name != "No CPU selected" %}
-            <form method="GET" action="{{ url_for('remove_cpu') }}"><input type="submit" value="Remove from build"></form>
-          {% endif %}
-        </td>
-        <td><form method="GET" action="{{ url_for('cpu_index') }}"><input type="submit" value="Select a CPU"></form></td>
-      </tr>
-
-      <tr>
-        <td class="smaller">Motherboard</td>
-        <td>{{mobo_name}}</td>
-        <td>
-          {% if mobo_name != "No motherboard selected" %}
-            <form method="GET" action="{{ url_for('remove_mobo') }}"><input type="submit" value="Remove from build"></form>
-          {% endif %}
-        </td>
-        <td><form method="GET" action="{{ url_for('motherboard_index') }}"><input type="submit" value="Select a motherboard"></form></td>
-      </tr>
-
-      <tr>
-        <td class="smaller">Power Supply</td>
-        <td>{{psu_name}}</td>
-        <td>
-          {% if psu_name != "No power supply selected" %}
-            <form method="GET" action="{{ url_for('remove_psu') }}"><input type="submit" value="Remove from build"></form>
-          {% endif %}
-        </td>
-        <td><form method="GET" action="{{ url_for('psu_index') }}"><input type="submit" value="Select a power supply"></form></td>
+        <td class="smaller">CPU</td> <td>{{cpu_name}}</td> <td><form method="GET" action="{{ url_for('cpu_index') }}"><input type="submit" value="Select a CPU"></form></td>
       </tr>
       <tr>
-        <td class="smaller">Case</td>
-        <td>{{case_name}}</td>
-        <td>
-          {% if case_name != "No case selected" %}
-            <form method="GET" action="{{ url_for('remove_case') }}"><input type="submit" value="Remove from build"></form>
-          {% endif %}
-        </td>
-        <td><form method="GET" action="{{ url_for('case_index') }}"><input type="submit" value="Select a case"></form></td>
+        <td class="smaller">Motherboard</td> <td>{{mobo_name}}</td> <td><form method="GET" action="{{ url_for('motherboard_index') }}"><input type="submit" value="Select a motherboard"></form></td>
       </tr>
-
-      {% for gpu_n, gpu_i in gpu_name %}
-        {% if loop.index == 1 %}
-          <tr>
-            <td class="smaller">Graphics Card</td>
-            <td>{{ gpu_n }}</td>
-            <td>
-              {% if gpu_n != "No graphics card selected" %}
-                <form method="POST" action="{{ url_for('remove_gpu') }}"><input type="submit" value="Remove from build"><input value = "{{gpu_i}}" type="hidden" name="gpu_id"></form>
-              {% endif %}
-            </td>
-            <td><form method="GET" action="{{ url_for('gpu_index') }}"><input type="submit" value="Add a graphics card"></form></td>
-          </tr>
-        {% else %}
-          <tr>
-            <td></td>
-            <td>gpu_n</td>
-            <td>
-              <form method="POST" action="{{ url_for('remove_gpu') }}"><input type="submit" value="Remove from build"><input value = "{{gpu_i}}" type="hidden" name="gpu_id"></form>
-            </td>
-            <td></td>
-          </tr>
-        {% endif %}
-      {% endfor %}
-
-      {% for mem_n, mem_i in mem_name %}
-        {% if loop.index == 1 %}
-          <tr>
-            <td class="smaller">Memory</td>
-            <td>{{ mem_n }}</td>
-            <td>
-              {% if mem_n != "No memory selected" %}
-                <form method="POST" action="{{ url_for('remove_mem') }}"><input type="submit" value="Remove from build"><input value = "{{mem_i}}" type="hidden" name="mem_id"></form>
-              {% endif %}
-            </td>
-            <td><form method="GET" action="{{ url_for('memory_index') }}"><input type="submit" value="Add memory"></form></td>
-          </tr>
-        {% else %}
-          <tr>
-            <td></td>
-            <td>mem_n</td>
-            <td>
-              <form method="POST" action="{{ url_for('remove_mem') }}"><input type="submit" value="Remove from build"><input value = "{{mem_i}}" type="hidden" name="mem_id"></form>
-            </td>
-            <td></td>
-          </tr>
-        {% endif %}
-      {% endfor %}
-
-      {% for sto_n, sto_i in sto_name %}
-        {% if loop.index == 1 %}
-          <tr>
-            <td class="smaller">Storage</td>
-            <td>{{ sto_n }}</td>
-            <td>
-              {% if sto_n != "No storage selected" %}
-                <form method="POST" action="{{ url_for('remove_sto') }}"><input type="submit" value="Remove from build"><input value = "{{sto_i}}" type="hidden" name="sto_id"></form>
-              {% endif %}
-            </td>
-            <td><form method="GET" action="{{ url_for('storage_index') }}"><input type="submit" value="Add storage"></form></td>
-          </tr>
-        {% else %}
-          <tr>
-            <td></td>
-            <td>sto_n</td>
-            <td>
-              <form method="POST" action="{{ url_for('remove_sto') }}"><input type="submit" value="Remove from build"><input value = "{{sto_i}}" type="hidden" name="sto_id"></form>
-            </td>
-            <td></td>
-          </tr>
-        {% endif %}
-      {% endfor %}
-
       <tr>
-        <td style="font: italic bold 15px">Total Cost</td> <td>${{total_cost}}</td>
+        <td class="smaller">Power Supply</td> <td>{{psu_name}}</td> <td><form method="GET" action="{{ url_for('psu_index') }}"><input type="submit" value="Select a power supply"></form></td>
+      </tr>
+      <tr>
+        <td class="smaller">Case</td> <td>{{case_name}}</td> <td><form method="GET" action="{{ url_for('case_index') }}"><input type="submit" value="Select a case"></form></td>
+      </tr>
+      <tr>
+        <td class="smaller">Graphics Card</td>
+        <td>{% for gpu_n in gpu_name %}
+          {{gpu_n}}
+        {% endfor %}</td>
+        <td><form method="GET" action="{{ url_for('gpu_index') }}"><input type="submit" value="Select a graphics card"></form></td>
+      </tr>
+      <tr>
+        <td class="smaller">Memory</td>
+        <td>{% for mem_n in mem_name %}
+          {{mem_n}}
+        {% endfor %}</td>
+        <td><form method="GET" action="{{ url_for('memory_index') }}"><input type="submit" value="Select memory"></form></td>
+      </tr>
+      <tr>
+        <td class="smaller">Storage</td>
+        <td>{% for sto_n in sto_name %}
+          {{sto_n}}
+        {% endfor %}</td>
+        <td><form method="GET" action="{{ url_for('storage_index') }}"><input type="submit" value="Select storage"></form></td>
+      </tr>
+      <tr>
+        <td class="smaller">Total Cost</td> <td>${{total_cost}}</td>
       </tr>
     </table>
   </div>
