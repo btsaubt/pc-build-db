@@ -360,7 +360,7 @@ def current_build():
         context['case_name'] = "No case selected"
 
     # select names of parts using has_gpu, has_memory, and has_storage
-    if 'gpu_ids' in session:
+    if 'gpu_ids' in session or session['gpu_ids'] is not None:
         all_gpu_ids = ''
         print >> sys.stderr, "gpu start"
         for gid in session['gpu_ids']:
@@ -380,7 +380,7 @@ def current_build():
     else:
         context['gpu_name'] = [("No graphics card selected", -1)]
 
-    if 'mem_ids' in session:
+    if 'mem_ids' in session or session['mem_ids'] is not None:
         all_mem_ids = ''
         for mid in session['mem_ids']:
             all_mem_ids += ' OR mem_id = {}'.format(mid)
@@ -397,7 +397,7 @@ def current_build():
     else:
         context['mem_name'] = [("No memory selected", -1)]
 
-    if 'sto_ids' in session:
+    if 'sto_ids' in session or session['sto_ids'] is not None:
         all_sto_ids = ''
         for sid in session['sto_ids']:
             all_sto_ids += ' OR sto_id = {}'.format(sid)
