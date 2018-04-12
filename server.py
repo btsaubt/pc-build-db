@@ -367,7 +367,7 @@ def current_build():
         all_gpu_ids = all_gpu_ids[4:]
         gpu_names = []
         cursor2 = g.conn.execute(
-            'SELECT gpu_name, gpu_id price FROM gpu WHERE {}'.format(all_gpu_ids))
+            'SELECT gpu_name, gpu_id, price FROM gpu WHERE {}'.format(all_gpu_ids))
         for result2 in cursor2:
             gpu_names.append((result2['gpu_name'], result2['gpu_id']))
             curr_price += result2['price']
