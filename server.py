@@ -169,7 +169,7 @@ def psu_index():
     if session['form_factor']:
         form_conditional = 'WHERE '
         if 'case_id' in session:
-            form_conditional += 'ff.case_id = {}'.format(session['case_id'])
+            form_conditional += 'ff.case_id = {} '.format(session['case_id'])
         if 'mobo_id' in session:
             form_conditional += '{} ff.mobo_id = {}'.format('AND' if 'case_id' in session else '',
                                                              session['mobo_id'])
@@ -208,9 +208,9 @@ def case_index():
     if session['form_factor']:
         form_conditional = 'WHERE '
         if 'psu_id' in session:
-            form_conditional = 'ff.psu_id = {}'.format(session['psu_id'])
+            form_conditional += 'ff.psu_id = {} '.format(session['psu_id'])
         if 'mobo_id' in session:
-            form_conditional += ' {} ff.mobo_id = {}'.format('AND' if 'psu_id' in session else '',
+            form_conditional += '{} ff.mobo_id = {}'.format('AND' if 'psu_id' in session else '',
                                                               session['mobo_id'])
 
     query = '''SELECT DISTINCT c.case_id, c.case_name, c.type, c.ext_bays, c.int_bays, c.price FROM
