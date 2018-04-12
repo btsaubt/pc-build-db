@@ -780,7 +780,7 @@ def add_complete_build():
     if incompatible_build:
         return redirect(url_for('current_build'))
 
-    build_id = g.conn.execute('SELECT MAX(build_id) FROM builds').fetchone() + 1
+    build_id = g.conn.execute('SELECT MAX(build_id) FROM builds')[0] + 1
     print >> sys.stderr, "id of type {}".format(type(build_id))
 
     # first insert into builds table
