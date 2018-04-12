@@ -105,7 +105,7 @@ def motherboard_index():
     # have already been selected)
     query_select = "SELECT DISTINCT m.mobo_id, m.mobo_name, m.ram_slots, m.price"
     query_from = " FROM motherboard m"
-    query_where = " WHERE m.ram_slots > {}".format(session['cur_mem_slots'])
+    query_where = " WHERE m.ram_slots >= {}".format(session['cur_mem_slots'])
     if session['socket']:
         query_from += ", cpu_sockets cs"
         query_where += " AND cs.cpu_id = {} and m.mobo_id = cs.mobo_id".format(session['cpu_id'])
@@ -258,7 +258,7 @@ def storage_index():
     """
     all_stos = []
     all_ids = []
-    query = "SELECT * FROM storage WHERE"
+    query = "SELECT * FROM storage"
 
     if 'sto_ids' in session:
         all_sto_ids = ''
@@ -508,11 +508,10 @@ def add_mem():
     """
     add memory to session, redirect to current_build
     """
-    print >> sys.stderr, "adding memory with id {}".format(request.form['mem_id'])
     num_mod = g.conn.execute('SELECT module_num FROM memory WHERE mem_id = {}'.format(
                              request.form['mem_id'])).fetchone()['module_num']
-    print >> sys.stderr, "num modules: {}".format(num_mod)
     session['cur_mem_slots'] += num_mod
+    print >> sys.stderr, "current memory slots after add_mem is now {}".format(session['cur_mem_slots'])
 
     if 'mem_ids' not in session or session['mem_ids'] is None:
         session['mem_ids'] = [request.form['mem_id']]
@@ -624,9 +623,11 @@ def remove_mem():
         session.pop('mem_ids', None)
     else:
         session['mem_ids'].remove(request.form['mem_id'])
+
     session['cur_mem_slots'] -= g.conn.execute(
         'SELECT module_num FROM memory WHERE mem_id = {}'.format(
             request.form['mem_id'])).fetchone()['module_num']
+    print >> sys.stderr, "current memory slots after remove_mem is now {}".format(session['cur_mem_slots'])
 
     session.modified = True
 
