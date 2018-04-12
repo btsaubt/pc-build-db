@@ -68,7 +68,6 @@ def cpu_index():
     """
     get all CPU ids and information from sql table - if socket correct
     """
-
     all_cpus = []
     all_ids = []
     query = '''SELECT DISTINCT c.cpu_id, c.cpu_name, c.speed, c.cores, c.tdp, c.price FROM cpu c,
@@ -92,7 +91,6 @@ def motherboard_index():
     """
     get all mobos ids and information from sql table
     """
-
     all_mobos = []
     all_ids = []
 
@@ -138,10 +136,8 @@ def psu_index():
     """
     get all PSU ids and information from sql table
     """
-
     all_psus = []
     all_ids = []
-
 
     form_conditional = ''
     if session['form_factor']:
@@ -173,7 +169,6 @@ def case_index():
     """
     get all case ids and information from sql table
     """
-
     all_cases = []
     all_ids = []
 
@@ -208,10 +203,17 @@ def gpu_index():
     """
     get all GPU ids and information from sql table
     """
-
     all_gpus = []
     all_ids = []
-    cursor = g.conn.execute("SELECT * FROM gpu")
+    query = "SELECT * FROM gpu"
+    if 'gpu_ids' in session:
+        all_gpu_ids = ''
+        for gid in session['gpu_ids']:
+            all_gpu_ids += ' AND gpu_id != {}'.format(gid)
+        all_gpu_ids = all_gpu_ids[4:]
+        query += " WHERE " += all_gpu_ids
+
+    cursor = g.conn.execute(query)    
     for result in cursor:
         all_gpus.append('''<td>{}</td><td>{}</td><td>{}</td><td>{}GHz</td><td>{}W</td><td>{}GB</td>
 <td>${}</td>'''.format(result['gpu_name'], result['series'], result['chipset'],
@@ -228,11 +230,16 @@ def memory_index():
     """
     get all memory ids and information from sql table
     """
-
     all_mems = []
     all_ids = []
-    cursor = g.conn.execute("SELECT * FROM memory WHERE module_num < {}".format(
-        session['max_mem_slots'] - session['cur_mem_slots']))
+    query = "SELECT * FROM memory WHERE module_num <= {}".format(
+        session['max_mem_slots'] - session['cur_mem_slots'])
+
+    if 'mem_ids' in session:
+        for mid in session['mem_ids']:
+            query += ' AND mem_id != {}'.format(mid)
+
+    cursor = g.conn.execute(query)
     for result in cursor:
         all_mems.append('<td>{}</td><td>{}</td><td>{}</td><td>{}GB</td><td>{}</td><td>${}</td>'.
                         format(result['mem_name'], result['speed'], result['cas'],
@@ -249,10 +256,18 @@ def storage_index():
     """
     get all storage ids and information from sql table
     """
-
     all_stos = []
     all_ids = []
-    cursor = g.conn.execute("SELECT * FROM storage")
+    query = "SELECT * FROM storage WHERE"
+
+    if 'sto_ids' in session:
+        all_sto_ids = ''
+        for sid in session['sto_ids']:
+            all_sto_ids += ' AND sto_id != {}'.format(sid)
+        all_sto_ids = all_sto_ids[4:]
+        query += " WHERE " += all_sto_ids
+
+    cursor = g.conn.execute(query)
     for result in cursor:
         all_stos.append('''<td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}GB</td><td>{}</td>
 <td>${}</td>'''.format(result['sto_name'], result['series'], result['form'], result['type'],
@@ -322,11 +337,11 @@ def current_build():
         context['gpu_name'] = [("No graphics card selected", -1)]
     else:
         all_gpu_ids = ''
-        print >> sys.stderr, "session gpu_ids in current_build: {}".format(session['gpu_ids'])
+        # print >> sys.stderr, "session gpu_ids in current_build: {}".format(session['gpu_ids'])
         for gid in session['gpu_ids']:
             all_gpu_ids += ' OR gpu_id = {}'.format(gid)
-            print >> sys.stderr, "another gpu_id: {}".format(gid)
-        print >> sys.stderr, "all gpu ids query: {}".format(all_gpu_ids)
+            # print >> sys.stderr, "another gpu_id: {}".format(gid)
+        # print >> sys.stderr, "all gpu ids query: {}".format(all_gpu_ids)
         all_gpu_ids = all_gpu_ids[4:]
         gpu_names = []
         cursor2 = g.conn.execute(
@@ -757,7 +772,8 @@ def add_complete_build():
         flash('Need to select memory for every build!')
         return redirect(url_for('current_build'))
 
-    build_id = g.conn.execute('SELECT MAX(build_id) FROM builds').fetchone()['build_id']
+    build_id = g.conn.execute('SELECT MAX(build_id) FROM builds').fetchone()['build_id'] + 1
+    print >> sys.stderr, "id of type {}".format(type(build_id))
 
     # case is optional - so check for existence
     query_insert = 'INSERT INTO builds ()'
