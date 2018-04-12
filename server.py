@@ -333,7 +333,7 @@ def current_build():
             gpu_names.append((result2['gpu_name'], result2['gpu_id']))
             curr_price += result2['price']
         context['gpu_name'] = gpu_names
-        print >> sys.stderr, gpu_names
+        print >> sys.stderr, "gpu names: {}".format(gpu_names)
         cursor2.close()
 
     if 'mem_ids' not in session or session['mem_ids'] is None:
@@ -400,7 +400,7 @@ def add_new_build():
         session.pop('case_id', None)
     if 'gpu_ids' in session:
         session.pop('gpu_ids', None)
-        print >> sys.stderr, 'gpu ids popped in add nwe build'
+        print >> sys.stderr, 'gpu ids popped in add new build'
     if 'mem_ids' in session:
         session.pop('mem_ids', None)
     if 'sto_ids' in session:
@@ -460,6 +460,7 @@ def add_gpu():
     """
     add gpu to session, redirect to current_build
     """
+    print >> sys.stderr, "gpu ids in session before add_gpu: {}".format(session['gpu_ids'])
     if 'gpu_ids' not in session or session['gpu_ids'] is None:
         session['gpu_ids'] = [request.form['gpu_id']]
     else:
@@ -598,7 +599,7 @@ def build_index():
     """
 
     # DEBUG: this is debugging code to see what request looks like
-    print request.args
+    # print request.args
 
     # let us grab all builds from database and build a table row:
     all_builds = []
