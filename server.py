@@ -500,8 +500,8 @@ def add_gpu():
     add gpu to session, redirect to current_build
     """
     if 'gpu_id' not in session:
-        session['gpu_id'] = []
-    session['gpu_id'].append(request.form['gpu_id'])
+        session['gpu_ids'] = []
+    session['gpu_ids'].append(request.form['gpu_id'])
     return redirect(url_for('current_build'))
 
 
@@ -510,12 +510,13 @@ def add_mem():
     """
     add memory to session, redirect to current_build
     """
-    if 'mem_id' not in session:
-        session['mem_id'] = []
-    session['mem_id'].append(request.form['mem_id'])
     session['cur_mem_slots'] += g.conn.execute(
         'SELECT module_num FROM memory WHERE mem_id = {}'.format(
-            request.form['mem_id'])).fetchone()['module_num']
+            request.form['mem_ids'])).fetchone()['module_num']
+
+    if 'mem_id' not in session:
+        session['mem_ids'] = []
+    session['mem_ids'].append(request.form['mem_id'])
     return redirect(url_for('current_build'))
 
 
