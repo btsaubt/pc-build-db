@@ -62,6 +62,9 @@ td {
         <td id="smaller">Case</td> <td>{{case_name}}</td> <td><form method="GET" action="{{ url_for('case_index') }}"><input type="submit" value="Select a case"></form></td><td></td>
       </tr>
       <tr>
+
+<!--  OLD CODE, see revised GPU, mem, and sto rows below
+
         <td id="smaller">Graphics Card</td>
         <td>{% for gpu_n in gpu_name %}
           {{gpu_n}}
@@ -82,11 +85,11 @@ td {
         {% endfor %}</td>
         <td><form method="GET" action="{{ url_for('storage_index') }}"><input type="submit" value="Select storage"></form></td><td></td>
       </tr>
-
+-->
       {% for gpu_n, gpu_i in gpu_name %}
         {% if loop.index == 1 %}
           <tr>
-            <td>Graphics Card</td>
+            <td id="smaller">Graphics Card</td>
             <td>{{ gpu_n }}</td>
             <td>
               {% if gpu_n != "No graphics card selected" %}
@@ -110,7 +113,7 @@ td {
       {% for mem_n, mem_i in mem_name %}
         {% if loop.index == 1 %}
           <tr>
-            <td>Memory</td>
+            <td id="smaller">Memory</td>
             <td>{{ mem_n }}</td>
             <td>
               {% if mem_n != "No memory selected" %}
@@ -134,7 +137,7 @@ td {
       {% for sto_n, sto_i in sto_name %}
         {% if loop.index == 1 %}
           <tr>
-            <td>Storage</td>
+            <td id="smaller">Storage</td>
             <td>{{ sto_n }}</td>
             <td>
               {% if sto_n != "No storage selected" %}
