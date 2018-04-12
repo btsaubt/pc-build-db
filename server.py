@@ -499,7 +499,7 @@ def add_gpu():
     """
     add gpu to session, redirect to current_build
     """
-    if 'gpu_id' not in session:
+    if 'gpu_ids' not in session:
         session['gpu_ids'] = []
     session['gpu_ids'].append(request.form['gpu_id'])
     return redirect(url_for('current_build'))
@@ -514,7 +514,7 @@ def add_mem():
         'SELECT module_num FROM memory WHERE mem_id = {}'.format(
             request.form['mem_ids'])).fetchone()['module_num']
 
-    if 'mem_id' not in session:
+    if 'mem_ids' not in session:
         session['mem_ids'] = []
     session['mem_ids'].append(request.form['mem_id'])
     return redirect(url_for('current_build'))
@@ -525,9 +525,9 @@ def add_sto():
     """
     add storage to session, redirect to current_build
     """
-    if 'sto_id' not in session:
-        session['sto_id'] = []
-    session['sto_id'].append(request.form['sto_id'])
+    if 'sto_ids' not in session:
+        session['sto_ids'] = []
+    session['sto_ids'].append(request.form['sto_id'])
     return redirect(url_for('current_build'))
 
 
