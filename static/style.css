@@ -6,8 +6,8 @@ h2              { font-size: 1.2em; margin-left:3em; }
 
 table			{ 
 					width: 100%; 
+					border: 0px;
 					table-layout: fixed; 
-					border-collapse: collapse;
 					text-align: center; 
 				}
 
