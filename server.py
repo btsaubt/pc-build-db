@@ -693,12 +693,15 @@ def build_index():
             curr_price += result2['price']
         cursor2.close()
 
-        cursor2 = g.conn.execute(
-            "SELECT case_name, price FROM cases WHERE case_id = {}".format(result['case_id']))
-        for result2 in cursor2:
-            curr_build += " <td>{}</td>".format(result2['case_name'])
-            curr_price += result2['price']
-        cursor2.close()
+        if result['case_id'] is not None:
+            cursor2 = g.conn.execute(
+                "SELECT case_name, price FROM cases WHERE case_id = {}".format(result['case_id']))
+            for result2 in cursor2:
+                curr_build += " <td>{}</td>".format(result2['case_name'])
+                curr_price += result2['price']
+            cursor2.close()
+        else:
+            curr_build += "<td></td>"
 
         # select names of parts using has_gpu, has_memory, and has_storage
         cursor2 = g.conn.execute(
