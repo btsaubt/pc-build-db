@@ -460,10 +460,11 @@ def add_gpu():
     """
     add gpu to session, redirect to current_build
     """
-    print >> sys.stderr, "gpu ids in session before add_gpu: {}".format(session['gpu_ids'])
     if 'gpu_ids' not in session or session['gpu_ids'] is None:
+        print >> sys.stderr, "gpu_ids currently empty in session"
         session['gpu_ids'] = [request.form['gpu_id']]
     else:
+        print >> sys.stderr, "gpu ids in session before add_gpu: {}".format(session['gpu_ids'])
         session['gpu_ids'] = session['gpu_ids'].append(request.form['gpu_id'])
     print >> sys.stderr, "gpu ids in session after add_gpu: {}".format(session['gpu_ids'])
     return redirect(url_for('current_build'))
