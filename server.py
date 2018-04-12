@@ -465,7 +465,7 @@ def add_gpu():
         session['gpu_ids'] = [request.form['gpu_id']]
     else:
         print >> sys.stderr, "gpu ids in session before add_gpu: {}".format(session['gpu_ids'])
-        session['gpu_ids'] = session['gpu_ids'].append(request.form['gpu_id'])
+        session['gpu_ids'].append(request.form['gpu_id'])
     print >> sys.stderr, "gpu ids in session after add_gpu: {}".format(session['gpu_ids'])
     return redirect(url_for('current_build'))
 
@@ -482,7 +482,7 @@ def add_mem():
     if 'mem_ids' not in session or session['mem_ids'] is None:
         session['mem_ids'] = [request.form['mem_id']]
     else:
-        session['mem_ids'] = session['mem_ids'].append(request.form['mem_id'])
+        session['mem_ids'].append(request.form['mem_id'])
     return redirect(url_for('current_build'))
 
 
@@ -494,7 +494,7 @@ def add_sto():
     if 'sto_ids' not in session or session['sto_ids'] is None:
         session['sto_ids'] = [request.form['sto_id']]
     else:
-        session['sto_ids'] = session['sto_ids'].append(request.form['sto_id'])
+        session['sto_ids'].append(request.form['sto_id'])
     return redirect(url_for('current_build'))
 
 
