@@ -750,7 +750,7 @@ def build_index():
 
     context = dict(builds=all_builds, build_ids=all_build_ids)
 
-    return render_template(url_for('build_index'), **context)
+    return render_template('build_index.html', **context)
 
 
 @app.route('/add_complete_build', methods=['POST'])
