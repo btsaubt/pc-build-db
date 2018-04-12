@@ -81,7 +81,7 @@ def cpu_index():
     all_ids = []
     query = '''SELECT DISTINCT c.cpu_id, c.cpu_name, c.speed, c.cores, c.tdp, c.price FROM cpu c,
  cpu_sockets cs WHERE cs.mobo_id = {} AND c.cpu_id = cs.cpu_id'''.format(
-        session['mobo_id']) if session['socket'] else "SELECT * FROM cpu"
+     session['mobo_id']) if session['socket'] else "SELECT * FROM cpu"
     print >> sys.stderr, query
 
     cursor = g.conn.execute(query)
@@ -119,7 +119,7 @@ def motherboard_index():
     # have already been selected)
     query = '''SELECT DISTINCT m.mobo_id, m.mobo_name, m.ram_slots, m.price FROM motherboard m,
  cpu_sockets cs, form_compatible ff WHERE cs.cpu_id = {} AND m.mobo_id = cs.mobo_id AND'''.format(
-            session['cpu_id']) if session['socket'] else "SELECT * FROM motherboard WHERE"
+     session['cpu_id']) if session['socket'] else "SELECT * FROM motherboard WHERE"
 
     # reformat query to check for available ram slots and include form conditional
     query = "{} m.ram_slots > {} {}".format(query, session['cur_mem_slots'], form_conditional)
@@ -158,7 +158,7 @@ def psu_index():
             form_conditional = 'ff.case_id = {}'.format(session['case_id'])
         if 'mobo_id' in session:
             form_conditional += ' {} ff.mobo_id = {}'.format('AND' if 'case_id' in session else '',
-                session['mobo_id'])
+                                                             session['mobo_id'])
 
     query = '''SELECT DISTINCT p.psu_id, p.psu_name, p.series, p.efficiency, p.watts, p.modular,
  p.price FROM psu p, form_compatible ff {}'''.format(form_conditional)
@@ -196,8 +196,8 @@ def case_index():
         if 'psu_id' in session:
             form_conditional = 'ff.psu_id = {}'.format(session['psu_id'])
         if 'mobo_id' in session:
-            form_conditional += ' {}} ff.mobo_id = {}'.format('AND' if 'psu_id' in session else '',
-                session['mobo_id'])
+            form_conditional += ' {} ff.mobo_id = {}'.format('AND' if 'psu_id' in session else '',
+                                                              session['mobo_id'])
 
     query = '''SELECT DISTINCT c.case_id, c.case_name, c.type, c.ext_bays, c.int_bays, c.price FROM
  cases c, form_compatible ff {}'''.format(form_conditional)
@@ -252,7 +252,7 @@ def memory_index():
     all_mems = []
     all_ids = []
     cursor = g.conn.execute("SELECT * FROM memory WHERE module_num < {}".format(
-                            session['max_mem_slots'] - session['cur_mem_slots']))
+        session['max_mem_slots'] - session['cur_mem_slots']))
     for result in cursor:
         all_mems.append('<td>{}</td><td>{}</td><td>{}</td><td>{}GB</td><td>{}</td><td>${}</td>'.
                         format(result['mem_name'], result['speed'], result['cas'],
@@ -496,10 +496,10 @@ def add_mem():
     """
     add memory to session, redirect to current_build
     """
-    # if not enough ram slots, redirect as error and flash message
-
-    # if enough ram slots, add to build
     session['mem_id'] = request.form['mem_id']
+    session['cur_mem_slots'] += g.conn.execute(
+        'SELECT module_num FROM memory WHERE mem_id = {}'.format(
+            request.form['mem_id'])).fetchone()['module_num']
     return redirect(url_for('current_build'))
 
 
@@ -519,6 +519,8 @@ def remove_cpu():
     remove cpu_id from session, redirect to current_build
     """
     session.pop('cpu_id', None)
+    if 'mobo_id' not in session:
+        session['socket'] = False
     return redirect(url_for('current_build'))
 
 
@@ -528,6 +530,11 @@ def remove_mobo():
     remove mobo_id from session, redirect to current_build
     """
     session.pop('mobo_id', None)
+    if 'cpu_id' not in session:
+        session['socket'] = False
+    if 'psu_id' not in session and 'case_id' not in session:
+        session['form_factor'] = False
+    session['max_mem_slots'] = 8
     return redirect(url_for('current_build'))
 
 
@@ -537,6 +544,8 @@ def remove_psu():
     remove psu_id from session, redirect to current_build
     """
     session.pop('psu_id', None)
+    if 'mobo_id' not in session and 'case_id' not in session:
+        session['form_factor'] = False
     return redirect(url_for('current_build'))
 
 
@@ -546,6 +555,8 @@ def remove_case():
     remove case_id from session, redirect to current_build
     """
     session.pop('case_id', None)
+    if 'mobo_id' not in session and 'psu_id' not in session:
+        session['form_factor'] = False
     return redirect(url_for('current_build'))
 
 
@@ -558,7 +569,6 @@ def remove_gpu():
         session.pop('gpu_ids', None)
     else:
         session['gpu_ids'].remove(request.form['gpu_id'])
-
     return redirect(url_for('current_build'))
 
 
@@ -571,6 +581,9 @@ def remove_mem():
         session.pop('mem_ids', None)
     else:
         session['mem_ids'].remove(request.form['mem_id'])
+    session['cur_mem_slots'] -= g.conn.execute(
+        'SELECT module_num FROM memory WHERE mem_id = {}'.format(
+            request.form['mem_id'])).fetchone()['module_num']
 
     return redirect(url_for('current_build'))
 
@@ -584,7 +597,6 @@ def remove_sto():
         session.pop('sto_ids', None)
     else:
         session['sto_ids'].remove(request.form['sto_id'])
-
     return redirect(url_for('current_build'))
 
 
