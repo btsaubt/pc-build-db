@@ -105,7 +105,7 @@ def motherboard_index():
     # have already been selected)
     query_select = "SELECT DISTINCT m.mobo_id, m.mobo_name, m.ram_slots, m.price"
     query_from = " FROM motherboard m"
-    query_where = " WHERE m.ram_slots > {}".format(session['cur_mem_slots'])
+    query_where = " WHERE m.ram_slots >= {}".format(session['cur_mem_slots'])
     if session['socket']:
         query_from += ", cpu_sockets cs"
         query_where += " AND cs.cpu_id = {} and m.mobo_id = cs.mobo_id".format(session['cpu_id'])
@@ -258,7 +258,7 @@ def storage_index():
     """
     all_stos = []
     all_ids = []
-    query = "SELECT * FROM storage WHERE"
+    query = "SELECT * FROM storage"
 
     if 'sto_ids' in session:
         all_sto_ids = ''
@@ -366,7 +366,6 @@ def current_build():
         for result2 in cursor2:
             mem_names.append((result2['mem_name'], result2['mem_id']))
             curr_price += result2['price']
-            session['cur_mem_slots'] += result2['module_num']
         context['mem_name'] = mem_names
         cursor2.close()
 
@@ -387,10 +386,6 @@ def current_build():
         cursor2.close()
 
     context['total_cost'] = curr_price
-
-    # context = dict(build_name=session['build_name'], cpu_name='cpu name', mobo_name='mobo name',
-    #                psu_name='psu name', case_name='case name', gpu_name='gpu name',
-    #                mem_name='memory name', sto_name='storage name', total_cost=0)
 
     return render_template("current_build.html", **context)
 
@@ -508,9 +503,11 @@ def add_mem():
     """
     add memory to session, redirect to current_build
     """
-    session['cur_mem_slots'] += g.conn.execute(
-        'SELECT module_num FROM memory WHERE mem_id = {}'.format(
-            request.form['mem_ids'])).fetchone()['module_num']
+    num_mod = g.conn.execute('SELECT module_num FROM memory WHERE mem_id = {}'.format(
+                             request.form['mem_id'])).fetchone()['module_num']
+    print >> sys.stderr, "memory slots to add: {}".format(num_mod)
+    session['cur_mem_slots'] += num_mod
+    print >> sys.stderr, "current memory slots after add_mem is now {}".format(session['cur_mem_slots'])
 
     if 'mem_ids' not in session or session['mem_ids'] is None:
         session['mem_ids'] = [request.form['mem_id']]
@@ -622,9 +619,12 @@ def remove_mem():
         session.pop('mem_ids', None)
     else:
         session['mem_ids'].remove(request.form['mem_id'])
+
+    print >> sys.stderr, "current memory slots before remove_mem is now {}".format(session['cur_mem_slots'])
     session['cur_mem_slots'] -= g.conn.execute(
         'SELECT module_num FROM memory WHERE mem_id = {}'.format(
             request.form['mem_id'])).fetchone()['module_num']
+    print >> sys.stderr, "current memory slots after remove_mem is now {}".format(session['cur_mem_slots'])
 
     session.modified = True
 
@@ -693,12 +693,15 @@ def build_index():
             curr_price += result2['price']
         cursor2.close()
 
-        cursor2 = g.conn.execute(
-            "SELECT case_name, price FROM cases WHERE case_id = {}".format(result['case_id']))
-        for result2 in cursor2:
-            curr_build += " <td>{}</td>".format(result2['case_name'])
-            curr_price += result2['price']
-        cursor2.close()
+        if result['case_id'] is not None:
+            cursor2 = g.conn.execute(
+                "SELECT case_name, price FROM cases WHERE case_id = {}".format(result['case_id']))
+            for result2 in cursor2:
+                curr_build += " <td>{}</td>".format(result2['case_name'])
+                curr_price += result2['price']
+            cursor2.close()
+        else:
+            curr_build += "<td></td>"
 
         # select names of parts using has_gpu, has_memory, and has_storage
         cursor2 = g.conn.execute(
@@ -753,7 +756,7 @@ def build_index():
     return render_template('build_index.html', **context)
 
 
-@app.route('/add_complete_build', methods=['POST'])
+@app.route('/add_complete_build')
 def add_complete_build():
     """
     add a complete buld - check whether or not it is acceptable by sql builds table, and if so, then
@@ -780,15 +783,15 @@ def add_complete_build():
     if incompatible_build:
         return redirect(url_for('current_build'))
 
-    build_id = g.conn.execute('SELECT MAX(build_id) FROM builds').fetchone()['build_id'] + 1
+    build_id = g.conn.execute('SELECT MAX(build_id) FROM builds').fetchone()[0] + 1
     print >> sys.stderr, "id of type {}".format(type(build_id))
 
     # first insert into builds table
     # case is optional - so check for existence
-    query_columns = "build_id, cpu_id, mobo_id, psu_id{}".format(
+    query_columns = "build_id, build_name, cpu_id, mobo_id, psu_id{}".format(
         ', case_id' if 'case_id' in session else '')
-    query_values = "{}, {}, {}{}".format(build_id, session['cpu_id'], session['mobo_id'],
-        session['mobo_id'], ', {}'.format(session['case_id']) if 'case_id' in session else '')
+    query_values = "{}, '{}', {}, {}, {}{}".format(build_id, session['build_name'], session['cpu_id'], session['mobo_id'],
+        session['psu_id'], ', {}'.format(session['case_id']) if 'case_id' in session else '')
 
     query = 'INSERT INTO builds ({}) VALUES ({})'.format(query_columns, query_values)
     engine.execute(query)
