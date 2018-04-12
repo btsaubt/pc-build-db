@@ -504,6 +504,7 @@ def add_gpu():
     if 'gpu_ids' not in session:
         session['gpu_ids'] = []
     session['gpu_ids'].append(request.form['gpu_id'])
+    print >> sys.stderr, session['gpu_ids']
     return redirect(url_for('current_build'))
 
 
