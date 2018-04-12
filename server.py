@@ -115,10 +115,13 @@ def motherboard_index():
         if 'psu_id' in session:
             form_conditional += ' AND ff.psu_id = {}'.format(session['psu_id'])
 
+    # select only mobos that are correct form factor and cpu socket (if cpu and/or case and/or psu
+    # have already been selected)
     query = '''SELECT DISTINCT m.mobo_id, m.mobo_name, m.ram_slots, m.price FROM motherboard m,
  cpu_sockets cs, form_compatible ff WHERE cs.cpu_id = {} AND m.mobo_id = cs.mobo_id AND'''.format(
             session['cpu_id']) if session['socket'] else "SELECT * FROM motherboard WHERE"
 
+    # reformat query to check for available ram slots and include form conditional
     query = "{} m.ram_slots > {} {}".format(query, session['cur_mem_slots'], form_conditional)
     print >> sys.stderr, query
 
@@ -153,9 +156,9 @@ def psu_index():
         form_conditional = 'WHERE '
         if 'case_id' in session:
             form_conditional = 'ff.case_id = {}'.format(session['case_id'])
-        if 'gpu_id' in session:
-            form_conditional += ' {}} ff.gpu_id = {}'.format('AND' if 'case_id' in session else '',
-                session['gpu_id'])
+        if 'mobo_id' in session:
+            form_conditional += ' {} ff.mobo_id = {}'.format('AND' if 'case_id' in session else '',
+                session['mobo_id'])
 
     query = '''SELECT DISTINCT p.psu_id, p.psu_name, p.series, p.efficiency, p.watts, p.modular,
  p.price FROM psu p, form_compatible ff {}'''.format(form_conditional)
@@ -192,9 +195,9 @@ def case_index():
         form_conditional = 'WHERE '
         if 'psu_id' in session:
             form_conditional = 'ff.psu_id = {}'.format(session['psu_id'])
-        if 'gpu_id' in session:
-            form_conditional += ' {}} ff.gpu_id = {}'.format('AND' if 'psu_id' in session else '',
-                session['gpu_id'])
+        if 'mobo_id' in session:
+            form_conditional += ' {}} ff.mobo_id = {}'.format('AND' if 'psu_id' in session else '',
+                session['mobo_id'])
 
     query = '''SELECT DISTINCT c.case_id, c.case_name, c.type, c.ext_bays, c.int_bays, c.price FROM
  cases c, form_compatible ff {}'''.format(form_conditional)
