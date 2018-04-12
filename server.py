@@ -365,6 +365,7 @@ def current_build():
         for gid in session['gpu_ids']:
             all_gpu_ids += ' OR gpu_id = {}'.format(gid)
         all_gpu_ids = all_gpu_ids[4:]
+        print >> sys.stderr, all_gpu_ids
         gpu_names = []
         cursor2 = g.conn.execute(
             'SELECT gpu_name, gpu_id, price FROM gpu WHERE {}'.format(all_gpu_ids))
@@ -372,6 +373,7 @@ def current_build():
             gpu_names.append((result2['gpu_name'], result2['gpu_id']))
             curr_price += result2['price']
         context['gpu_name'] = gpu_names
+        print >> sys.stderr, gpu_names
         cursor2.close()
     else:
         context['gpu_name'] = [("No graphics card selected", -1)]
