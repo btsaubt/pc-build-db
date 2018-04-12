@@ -360,7 +360,9 @@ def current_build():
         context['case_name'] = "No case selected"
 
     # select names of parts using has_gpu, has_memory, and has_storage
-    if 'gpu_ids' in session or session['gpu_ids'] is not None:
+    if 'gpu_ids' not in session or session['gpu_ids'] is None:
+        context['gpu_name'] = [("No graphics card selected", -1)]
+    else:
         all_gpu_ids = ''
         print >> sys.stderr, "gpu start"
         for gid in session['gpu_ids']:
@@ -377,10 +379,10 @@ def current_build():
         context['gpu_name'] = gpu_names
         print >> sys.stderr, gpu_names
         cursor2.close()
-    else:
-        context['gpu_name'] = [("No graphics card selected", -1)]
 
-    if 'mem_ids' in session or session['mem_ids'] is not None:
+    if 'mem_ids' not in session or session['mem_ids'] is None:
+        context['mem_name'] = [("No memory selected", -1)]
+    else:
         all_mem_ids = ''
         for mid in session['mem_ids']:
             all_mem_ids += ' OR mem_id = {}'.format(mid)
@@ -394,10 +396,10 @@ def current_build():
             session['cur_mem_slots'] += result2['module_num']
         context['mem_name'] = mem_names
         cursor2.close()
-    else:
-        context['mem_name'] = [("No memory selected", -1)]
 
-    if 'sto_ids' in session or session['sto_ids'] is not None:
+    if 'sto_ids' not in session or session['sto_ids'] is None:
+        context['sto_name'] = [("No storage selected", -1)]
+    else:
         all_sto_ids = ''
         for sid in session['sto_ids']:
             all_sto_ids += ' OR sto_id = {}'.format(sid)
@@ -410,8 +412,6 @@ def current_build():
             curr_price += result2['price']
         context['sto_name'] = sto_names
         cursor2.close()
-    else:
-        context['sto_name'] = [("No storage selected", -1)]
 
     context['total_cost'] = curr_price
 
@@ -507,6 +507,7 @@ def add_gpu():
         session['gpu_ids'] = [request.form['gpu_id']]
     else:
         session['gpu_ids'] = session['gpu_ids'].append(request.form['gpu_id'])
+    print >> sys.stderr, "gpu ids in session:"
     print >> sys.stderr, session['gpu_ids']
     return redirect(url_for('current_build'))
 
