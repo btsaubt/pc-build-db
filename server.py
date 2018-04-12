@@ -362,10 +362,12 @@ def current_build():
     # select names of parts using has_gpu, has_memory, and has_storage
     if 'gpu_ids' in session:
         all_gpu_ids = ''
+        print >> sys.stderr, "gpu start"
         for gid in session['gpu_ids']:
             all_gpu_ids += ' OR gpu_id = {}'.format(gid)
+            print >> sys.stderr, all_gpu_ids
+        print >> sys.stderr, "gpu done"
         all_gpu_ids = all_gpu_ids[4:]
-        print >> sys.stderr, all_gpu_ids
         gpu_names = []
         cursor2 = g.conn.execute(
             'SELECT gpu_name, gpu_id, price FROM gpu WHERE {}'.format(all_gpu_ids))
