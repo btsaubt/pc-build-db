@@ -322,8 +322,10 @@ def current_build():
         context['gpu_name'] = [("No graphics card selected", -1)]
     else:
         all_gpu_ids = ''
+        print >> sys.stderr, "session gpu_ids in current_build: {}".format(session['gpu_ids'])
         for gid in session['gpu_ids']:
             all_gpu_ids += ' OR gpu_id = {}'.format(gid)
+            print >> sys.stderr, "another gpu_id: {}".format(gid)
         print >> sys.stderr, "all gpu ids query: {}".format(all_gpu_ids)
         all_gpu_ids = all_gpu_ids[4:]
         gpu_names = []
