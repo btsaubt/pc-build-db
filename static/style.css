@@ -11,6 +11,11 @@ table			{
 					border-collapse: collapse; 
 				}
 
+tr:nth-of-type(odd){
+
+  background-color: #D3E3FC;
+
+}
 
 
 
