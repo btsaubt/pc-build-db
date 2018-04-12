@@ -34,14 +34,6 @@ DATABASEURI = "postgresql://kf2448:2558@35.227.79.146/proj1part2"
 engine = create_engine(DATABASEURI)
 
 
-# engine.execute("""CREATE TABLE IF NOT EXISTS test (
-#   id serial,
-#   name text
-# );""")
-# engine.execute("""INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'),
-# ('ada lovelace');""")
-
-
 @app.before_request
 def before_request():
     """
@@ -94,10 +86,6 @@ def cpu_index():
 
     context = dict(cpus=zip(all_cpus, all_ids))
 
-    #
-    # render_template looks in the templates/ folder for files.
-    # for example, the below file reads template/index.html
-    #
     return render_template("cpu_index.html", **context)
 
 
@@ -132,12 +120,6 @@ def motherboard_index():
         if 'psu_id' in session:
             query_where +=  " AND ff.psu_id = {}".format(session['psu_id'])
 
-     #FROM motherboard m,
-#  cpu_sockets cs, form_compatible ff WHERE cs.cpu_id = {} AND m.mobo_id = cs.mobo_id AND'''.format(
-#      session['cpu_id']) if session['socket'] else '''SELECT DISTINCT 
-# ''' if session['form_factor'] else "SELECT * FROM motherboard m WHERE"
-
-    # query = "{} {}".format(query, session['cur_mem_slots'], form_conditional)
     query = '{}{}{}'.format(query_select, query_from, query_where)
     print >> sys.stderr, query
 
@@ -150,10 +132,6 @@ def motherboard_index():
 
     context = dict(mobos=zip(all_mobos, all_ids))
 
-    #
-    # render_template looks in the templates/ folder for files.
-    # for example, the below file reads template/index.html
-    #
     return render_template("motherboard_index.html", **context)
 
 
@@ -189,10 +167,6 @@ def psu_index():
 
     context = dict(psus=zip(all_psus, all_ids))
 
-    #
-    # render_template looks in the templates/ folder for files.
-    # for example, the below file reads template/index.html
-    #
     return render_template("psu_index.html", **context)
 
 
@@ -228,10 +202,6 @@ def case_index():
 
     context = dict(cases=zip(all_cases, all_ids))
 
-    #
-    # render_template looks in the templates/ folder for files.
-    # for example, the below file reads template/index.html
-    #
     return render_template("case_index.html", **context)
 
 
@@ -252,10 +222,6 @@ def gpu_index():
 
     context = dict(gpus=zip(all_gpus, all_ids))
 
-    #
-    # render_template looks in the templates/ folder for files.
-    # for example, the below file reads template/index.html
-    #
     return render_template("gpu_index.html", **context)
 
 
@@ -277,10 +243,6 @@ def memory_index():
 
     context = dict(mems=zip(all_mems, all_ids))
 
-    #
-    # render_template looks in the templates/ folder for files.
-    # for example, the below file reads template/index.html
-    #
     return render_template("memory_index.html", **context)
 
 
@@ -302,10 +264,6 @@ def storage_index():
 
     context = dict(stos=zip(all_stos, all_ids))
 
-    #
-    # render_template looks in the templates/ folder for files.
-    # for example, the below file reads template/index.html
-    #
     return render_template("storage_index.html", **context)
 
 
@@ -366,11 +324,9 @@ def current_build():
         context['gpu_name'] = [("No graphics card selected", -1)]
     else:
         all_gpu_ids = ''
-        print >> sys.stderr, "gpu start"
         for gid in session['gpu_ids']:
             all_gpu_ids += ' OR gpu_id = {}'.format(gid)
-            print >> sys.stderr, all_gpu_ids
-        print >> sys.stderr, "gpu done"
+        print >> sys.stderr, "all gpu ids query: {}".format(all_gpu_ids)
         all_gpu_ids = all_gpu_ids[4:]
         gpu_names = []
         cursor2 = g.conn.execute(
@@ -434,7 +390,7 @@ def add_new_build():
     session['build_name'] = request.form['BuildName']
     # check if this fails if cpu_id is already nonexistent/popped
 
-    print >> sys.stderr, 'trying to build {}'.format(session['build_name'])
+    print >> sys.stderr, 'starting new build {}'.format(session['build_name'])
 
     if 'cpu_id' in session:
         session.pop('cpu_id', None)
@@ -446,6 +402,7 @@ def add_new_build():
         session.pop('case_id', None)
     if 'gpu_ids' in session:
         session.pop('gpu_ids', None)
+        print >> sys.stderr, 'gpu ids popped in add nwe build'
     if 'mem_ids' in session:
         session.pop('mem_ids', None)
     if 'sto_ids' in session:
@@ -509,8 +466,7 @@ def add_gpu():
         session['gpu_ids'] = [request.form['gpu_id']]
     else:
         session['gpu_ids'] = session['gpu_ids'].append(request.form['gpu_id'])
-    print >> sys.stderr, "gpu ids in session:"
-    print >> sys.stderr, session['gpu_ids']
+    print >> sys.stderr, "gpu ids in session after add_gpu: {}".format(session['gpu_ids'])
     return redirect(url_for('current_build'))
 
 
@@ -599,7 +555,7 @@ def remove_gpu():
     else:
         session['gpu_ids'].remove(request.form['gpu_id'])
     print >> sys.stderr, "removed gpu id {} from session".format(request.form['gpu_id'])
-    print >> sys.stderr, "new gpu ids: {}".format(session['gpu_ids'])
+    print >> sys.stderr, "new gpu ids after removal: {}".format(session['gpu_ids'])
     return redirect(url_for('current_build'))
 
 
@@ -735,10 +691,6 @@ def build_index():
 
     context = dict(builds=all_builds, build_ids=all_build_ids)
 
-    #
-    # render_template looks in the templates/ folder for files.
-    # for example, the below file reads template/index.html
-    #
     return render_template("build_index.html", **context)
 
 
