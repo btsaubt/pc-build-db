@@ -117,12 +117,26 @@ def motherboard_index():
 
     # select only mobos that are correct form factor and cpu socket (if cpu and/or case and/or psu
     # have already been selected)
-    query = '''SELECT DISTINCT m.mobo_id, m.mobo_name, m.ram_slots, m.price FROM motherboard m,
- cpu_sockets cs, form_compatible ff WHERE cs.cpu_id = {} AND m.mobo_id = cs.mobo_id AND'''.format(
-     session['cpu_id']) if session['socket'] else "SELECT * FROM motherboard m WHERE"
+    query_select = "SELECT DISTINCT m.mobo_id, m.mobo_name, m.ram_slots, m.price"
+    query_from = " FROM motherboard m"
+    query_where = " WHERE m.ram_slots > {}".format(session['cur_mem_slots'])
+    if session['socket']:
+        query_from += ", cpu_sockets cs"
+        query_where += " AND cs.cpu_id = {} and m.mobo_id = cs.mobo_id".format(session['cpu_id'])
+    if session['form_factor']:
+        query_from += ", form_compatible ff"
+        if 'case_id' in session:
+            query_where +=  " AND ff.case_id = {}".format(session['case_id'])
+        if 'psu_id' in session:
+            query_where +=  " AND ff.psu_id = {}".format(session['psu_id'])
 
-    # reformat query to check for available ram slots and include form conditional
-    query = "{} m.ram_slots > {} {}".format(query, session['cur_mem_slots'], form_conditional)
+     #FROM motherboard m,
+#  cpu_sockets cs, form_compatible ff WHERE cs.cpu_id = {} AND m.mobo_id = cs.mobo_id AND'''.format(
+#      session['cpu_id']) if session['socket'] else '''SELECT DISTINCT 
+# ''' if session['form_factor'] else "SELECT * FROM motherboard m WHERE"
+
+    # query = "{} {}".format(query, session['cur_mem_slots'], form_conditional)
+    query = '{}{}{}'.format(query_select, query_from, query_where)
     print >> sys.stderr, query
 
     cursor = g.conn.execute(query)
