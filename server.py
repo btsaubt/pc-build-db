@@ -21,7 +21,6 @@ import click
 from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
 from flask import Flask, request, render_template, g, redirect, Response, session, url_for, flash
-from flask.ext.session import Session
 
 
 tmpl_dir = os.path.join(os.path.dirname(
@@ -29,7 +28,6 @@ tmpl_dir = os.path.join(os.path.dirname(
 app = Flask(__name__, template_folder=tmpl_dir)
 # set a secret key
 app.secret_key = 'l\xbd!\xeaN\xc8\x16r\xa3:\xa4\xc9\x15\xea\xc9)\xcd\xd3\xd0\x1a\xab6\xe3\x89'
-Session(app)
 DATABASEURI = "postgresql://kf2448:2558@35.227.79.146/proj1part2"
 engine = create_engine(DATABASEURI)
 
