@@ -28,19 +28,19 @@ tr:nth-of-type(odd){
 }
 
 #smaller {
-
   font-size: 12px;
-
-
 }
 
 #container {
-
   width: inherit;+
   height: inherit;
   margin-top: 1em;
-
 }
+
+#final{
+  background-color: #FFCCBC;
+}
+
 
 </style>
 
@@ -162,7 +162,7 @@ tr:nth-of-type(odd){
         {% endif %}
       {% endfor %}
 
-      <tr>
+      <tr id="final">
         <td id="smaller"><strong>Total Cost:</strong></td> <td></td> <td></td> <td>${{total_cost}}</td>
 
       </tr>
