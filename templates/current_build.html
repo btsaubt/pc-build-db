@@ -55,19 +55,51 @@ input[type="submit"] {
       </tr>
 
       <tr>
-        <td id="smaller">CPU</td> <td>{{cpu_name}}</td> <td> {% if cpu_price is defined %} ${{"%.2f"|format(cpu_price)}} {% endif %} </td> <td></td> <td><form method="GET" action="{{ url_for('cpu_index') }}"><input type="submit" value="Select a CPU"></form></td>
+        <td id="smaller">CPU</td>
+        <td>{{cpu_name}}</td>
+        <td> {% if cpu_price is defined %} ${{"%.2f"|format(cpu_price)}} {% endif %} </td>
+        <td>
+          {% if cpu_name != "No CPU selected" %}
+            <form method="GET" action="{{ url_for('remove_cpu') }}"><input type="submit" value="Remove from build"></form>
+          {% endif %}
+        </td>
+        <td><form method="GET" action="{{ url_for('cpu_index') }}"><input type="submit" value="Select a CPU"></form></td>
       </tr>
 
       <tr>
-        <td id="smaller">Motherboard</td> <td>{{mobo_name}}</td> <td> {% if mobo_price is defined %} ${{"%.2f"|format(mobo_price)}} {% endif %} </td> <td></td> <td><form method="GET" action="{{ url_for('motherboard_index') }}"><input type="submit" value="Select a motherboard"></form></td>
+        <td id="smaller">Motherboard</td>
+        <td>{{mobo_name}}</td>
+        <td> {% if mobo_price is defined %} ${{"%.2f"|format(mobo_price)}} {% endif %} </td>
+        <td>
+          {% if mobo_name != "No motherboard selected" %}
+            <form method="GET" action="{{ url_for('remove_mobo') }}"><input type="submit" value="Remove from build"></form>
+          {% endif %}
+        </td>
+        <td><form method="GET" action="{{ url_for('motherboard_index') }}"><input type="submit" value="Select a motherboard"></form></td>
       </tr>
 
       <tr>
-        <td id="smaller">Power Supply</td> <td>{{psu_name}}</td>  <td> {% if psu_price is defined %} ${{"%.2f"|format(psu_price) }} {% endif %} </td> <td></td> <td><form method="GET" action="{{ url_for('psu_index') }}"><input type="submit" value="Select a power supply"></form></td>
+        <td id="smaller">Power Supply</td>
+        <td>{{psu_name}}</td>
+        <td> {% if psu_price is defined %} ${{"%.2f"|format(psu_price) }} {% endif %} </td>
+        <td>
+          {% if psu_name != "No power supply selected" %}
+            <form method="GET" action="{{ url_for('remove_psu') }}"><input type="submit" value="Remove from build"></form>
+          {% endif %}
+        </td>
+        <td><form method="GET" action="{{ url_for('psu_index') }}"><input type="submit" value="Select a power supply"></form></td>
       </tr>
 
       <tr>
-        <td id="smaller">Case</td> <td>{{case_name}}</td> <td> {% if case_price is defined %} ${{"%.2f"|format(case_price) }} {% endif %} </td> <td></td> <td><form method="GET" action="{{ url_for('case_index') }}"><input type="submit" value="Select a case"></form></td>
+        <td id="smaller">Case</td>
+        <td>{{case_name}}</td>
+        <td> {% if case_price is defined %} ${{"%.2f"|format(case_price) }} {% endif %} </td>
+        <td>
+          {% if case_name != "No case selected" %}
+            <form method="GET" action="{{ url_for('remove_case') }}"><input type="submit" value="Remove from build"></form>
+          {% endif %}
+        </td>
+        <td><form method="GET" action="{{ url_for('case_index') }}"><input type="submit" value="Select a case"></form></td>
       </tr>
 
       {% for gpu_n, gpu_i, gpu_p in gpu_name %}
