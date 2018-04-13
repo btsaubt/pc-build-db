@@ -295,6 +295,7 @@ def current_build():
             "SELECT cpu_name, price FROM cpu WHERE cpu_id = {}".format(session['cpu_id']))
         for result2 in cursor2:
             context['cpu_name'] = result2['cpu_name']
+            context['cpu_price'] = result2['price']
             curr_price += result2['price']
         cursor2.close()
     else:
@@ -306,6 +307,7 @@ def current_build():
             format(session['mobo_id']))
         for result2 in cursor2:
             context['mobo_name'] = result2['mobo_name']
+            context['mobo_price'] = result2['price']
             session['max_mem_slots'] = result2['ram_slots']
             curr_price += result2['price']
         cursor2.close()
@@ -317,6 +319,7 @@ def current_build():
             "SELECT psu_name, price FROM psu WHERE psu_id = {}".format(session['psu_id']))
         for result2 in cursor2:
             context['psu_name'] = result2['psu_name']
+            context['psu_price'] = result2['price']
             curr_price += result2['price']
         cursor2.close()
     else:
@@ -327,6 +330,7 @@ def current_build():
             "SELECT case_name, price FROM cases WHERE case_id = {}".format(session['case_id']))
         for result2 in cursor2:
             context['case_name'] = result2['case_name']
+            context['case_price'] = result2['price']
             curr_price += result2['price']
         cursor2.close()
     else:
@@ -334,7 +338,7 @@ def current_build():
 
     # select names of parts using has_gpu, has_memory, and has_storage
     if 'gpu_ids' not in session or session['gpu_ids'] is None:
-        context['gpu_name'] = [("No graphics card selected", -1)]
+        context['gpu_name'] = [("No graphics card selected", -1, -1)]
     else:
         all_gpu_ids = ''
         # print >> sys.stderr, "session gpu_ids in current_build: {}".format(session['gpu_ids'])
@@ -347,14 +351,14 @@ def current_build():
         cursor2 = g.conn.execute(
             'SELECT gpu_name, gpu_id, price FROM gpu WHERE {}'.format(all_gpu_ids))
         for result2 in cursor2:
-            gpu_names.append((result2['gpu_name'], result2['gpu_id']))
+            gpu_names.append((result2['gpu_name'], result2['gpu_id'], result2['price']))
             curr_price += result2['price']
         context['gpu_name'] = gpu_names
         print >> sys.stderr, "gpu names: {}".format(gpu_names)
         cursor2.close()
 
     if 'mem_ids' not in session or session['mem_ids'] is None:
-        context['mem_name'] = [("No memory selected", -1)]
+        context['mem_name'] = [("No memory selected", -1, -1)]
     else:
         all_mem_ids = ''
         for mid in session['mem_ids']:
@@ -364,13 +368,13 @@ def current_build():
         cursor2 = g.conn.execute(
             'SELECT mem_name, mem_id, price, module_num FROM memory WHERE {}'.format(all_mem_ids))
         for result2 in cursor2:
-            mem_names.append((result2['mem_name'], result2['mem_id']))
+            mem_names.append((result2['mem_name'], result2['mem_id'], result2['price']))
             curr_price += result2['price']
         context['mem_name'] = mem_names
         cursor2.close()
 
     if 'sto_ids' not in session or session['sto_ids'] is None:
-        context['sto_name'] = [("No storage selected", -1)]
+        context['sto_name'] = [("No storage selected", -1, -1)]
     else:
         all_sto_ids = ''
         for sid in session['sto_ids']:
@@ -380,7 +384,7 @@ def current_build():
         cursor2 = g.conn.execute(
             'SELECT sto_name, sto_id, price FROM storage WHERE {}'.format(all_sto_ids))
         for result2 in cursor2:
-            sto_names.append((result2['sto_name'], result2['sto_id']))
+            sto_names.append((result2['sto_name'], result2['sto_id'], result2['price']))
             curr_price += result2['price']
         context['sto_name'] = sto_names
         cursor2.close()
