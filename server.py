@@ -751,9 +751,19 @@ def build_index():
         all_builds.append(curr_build)
     cursor.close()
 
-    context = dict(builds=all_builds, build_ids=all_build_ids)
+    context = dict(builds = zip(all_builds, all_build_ids))
 
     return render_template('build_index.html', **context)
+
+
+@app.route('/remove_build', methods = ['POST'])
+def remove_build():
+    """
+    remove a build from the database
+    """
+    query = "DELETE FROM builds WHERE build_id = {}".format(request.form['build_id'])
+    engine.execute(query)
+    return redirect(url_for('build_index'))
 
 
 @app.route('/add_complete_build')
@@ -823,44 +833,11 @@ def add_complete_build():
     return redirect(url_for('build_index'))
 
 
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    """
-    login POST/GET method for this app
-    """
-    error = None
-    if request.method == 'POST':
-        if request.form['username'] != app.config['USERNAME']:
-            error = 'Invalid username'
-        elif request.form['password'] != app.config['PASSWORD']:
-            error = 'Invalid password'
-        else:
-            session['logged_in'] = True
-            flash('You were logged in')
-            return redirect(url_for('index'))
-    return render_template('login.html', error=error)
-
-
-@app.route('/logout')
-def logout():
-    """
-    pop user from users logged in
-    """
-    session.pop('logged_in', None)
-    flash('you were logged out')
-    return redirect(url_for('index'))
-
-
 @app.route('/')
 def index():
     '''
     default index page - shown only if not logged in
     '''
-    # if not logged in show index.html
-    # return render_template("index.html")
-
-    # if logged in go to builds
     return redirect(url_for('build_index'))
 
 
