@@ -80,7 +80,7 @@ def cpu_index():
 
     cursor = g.conn.execute(query)
     for result in cursor:
-        all_cpus.append('<td>{}</td><td>{}GHz</td><td>{}</td><td>{}W</td><td>${}</td>'.format(
+        all_cpus.append('<td>{}</td><td>{}GHz</td><td>{}</td><td>{}W</td><td>${:.2f}</td>'.format(
             result['cpu_name'], result['speed'], result['cores'], result['tdp'], result['price']))
         all_ids.append(result['cpu_id'])
 
@@ -136,7 +136,7 @@ def motherboard_index():
 
     cursor = g.conn.execute(query)
     for result in cursor:
-        all_mobos.append('<td>{}</td><td>{}</td><td>${}</td>'.format(result['mobo_name'],
+        all_mobos.append('<td>{}</td><td>{}</td><td>${:.2f}</td>'.format(result['mobo_name'],
                                                                      result['ram_slots'],
                                                                      result['price']))
         all_ids.append(result['mobo_id'])
@@ -180,7 +180,7 @@ def psu_index():
 
     cursor = g.conn.execute(query)
     for result in cursor:
-        all_psus.append('<td>{}</td><td>{}</td><td>{}</td><td>{}W</td><td>{}</td><td>${}</td>'.
+        all_psus.append('<td>{}</td><td>{}</td><td>{}</td><td>{}W</td><td>{}</td><td>${:.2f}</td>'.
                         format(result['psu_name'], result['series'], result['efficiency'],
                                result['watts'], result['modular'], result['price']))
         all_ids.append(result['psu_id'])
@@ -225,7 +225,7 @@ def case_index():
 
     cursor = g.conn.execute(query)
     for result in cursor:
-        all_cases.append('<td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>${}</td>'.
+        all_cases.append('<td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>${:.2f}</td>'.
                          format(result['case_name'], result['type'], result['ext_bays'],
                                 result['int_bays'], result['price']))
         all_ids.append(result['case_id'])
@@ -269,7 +269,7 @@ def gpu_index():
     cursor = g.conn.execute(query)    
     for result in cursor:
         all_gpus.append('''<td>{}</td><td>{}</td><td>{}</td><td>{}GHz</td><td>{}W</td><td>{}GB</td>
-<td>${}</td>'''.format(result['gpu_name'], result['series'], result['chipset'],
+<td>${:.2f}</td>'''.format(result['gpu_name'], result['series'], result['chipset'],
                        result['core_clock'], result['tdp'], result['gpu_mem'], result['price']))
         all_ids.append(result['gpu_id'])
 
@@ -309,7 +309,7 @@ def memory_index():
 
     cursor = g.conn.execute(query)
     for result in cursor:
-        all_mems.append('<td>{}</td><td>{}</td><td>{}</td><td>{}GB</td><td>{}</td><td>${}</td>'.
+        all_mems.append('<td>{}</td><td>{}</td><td>{}</td><td>{}GB</td><td>{}</td><td>${:.2f}</td>'.
                         format(result['mem_name'], result['speed'], result['cas'],
                                result['module_size'], result['module_num'], result['price']))
         all_ids.append(result['mem_id'])
@@ -352,7 +352,7 @@ def storage_index():
     cursor = g.conn.execute(query)
     for result in cursor:
         all_stos.append('''<td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}GB</td><td>{}</td>
-<td>${}</td>'''.format(result['sto_name'], result['series'], result['form'], result['type'],
+<td>${:.2f}</td>'''.format(result['sto_name'], result['series'], result['form'], result['type'],
                        result['capacity'], result['cache'] if "{}MB".format(result['cache']) is
                        not None else '', result['price']))
         all_ids.append(result['sto_id'])
@@ -841,7 +841,7 @@ def build_index():
         curr_build += "</td>"
         cursor2.close()
 
-        curr_build += "<td>${}</td>".format(curr_price)
+        curr_build += "<td>${:.2f}</td>".format(curr_price)
 
         all_builds.append(curr_build)
     cursor.close()
