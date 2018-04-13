@@ -8,8 +8,12 @@ tr:nth-of-type(odd){
 }
 
 th {
-  padding: 5px 10px;
   background-color: #77A6F7;
+  text-align: left;
+}
+
+td {
+  padding: 4px;
 }
 
 </style>
@@ -24,6 +28,7 @@ th {
         <th> External Bays </th>
         <th> Internal Bays </th>
         <th> Price </th>
+        <th> </th>
       </tr>
       {% for row, id in cases %}
         <tr>

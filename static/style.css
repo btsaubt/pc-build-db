@@ -1,4 +1,4 @@
-body            { font-family: 'Verdana', sans-serif; background: #77A6F7; font-size: 14px; }
+body            { font-family: 'Verdana', sans-serif; background: white; font-size: 12px; }
 a, h1, h2       { color: #000000; }
 h1, h2          { font-family: 'Verdana', sans-serif; margin: 0; }
 h1              { border-bottom: 3px solid #FFCCBC; }
@@ -6,15 +6,24 @@ h2              { font-size: 1.2em; margin-left:3em; }
 
 table			{ 
 					width: 100%; 
+					border: 0px;
 					table-layout: fixed; 
-					border-collapse: collapse; 
+					border-collapse: collapse;
 				}
 
 
-
-.page           { height:100%; width: 100%;}
+.page           { height: auto; width: auto; }
 .metanav        { text-align: right; font-size: 0.8em; padding-right: 5px;
                   margin-bottom: 1em; background: white; }
-.flash          { background: #cee5F5; padding: 0.5em;
-                  border: 1px solid #aacbe2; }
+.flash          { background: #cee5F5; margin: 0.5em; padding: 0.5em;
+                  border: 1px solid #aacbe2; 
+                  animation: blinker 0.33s linear;
+                  animation-iteration-count: 3;
+              	}
 .error          { background: #f0d6d6; padding: 0.5em; }
+
+@keyframes blinker {
+				  50%{
+				  	opacity: 0;
+				  }
+				}

@@ -4,35 +4,30 @@
 <style>
 table, td {
   width:100%;
-/*  border: 1px solid black; */
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 th {
-  padding-left: 10px;
-  text-align: left;
   background-color: #77A6F7;
-/*  font-size: 1em; */
+  text-align: left;
 }
 
 td {
   padding: 4px;
-  border-collapse:;
 }
 
 tr:nth-of-type(odd){
-
-  background-color: #D3E3FC;
-
+  background-color: #D3E3FC; 
 }
 
 #smaller {
   font-size: 12px;
+  font-style: italic;
 }
 
 #container {
-  width: inherit;+
+  width: inherit;
   height: inherit;
   margin-top: 1em;
 }
@@ -163,7 +158,7 @@ tr:nth-of-type(odd){
       {% endfor %}
 
       <tr id="final">
-        <td id="smaller"><strong>Total Cost:</strong></td> <td></td> <td></td> <td>${{total_cost}}</td>
+        <td id="smaller"><strong>Total Cost:</strong></td> <td></td> <td></td> <td>${{"%.2f"|format(total_cost)}}</td>
 
       </tr>
     </table>
