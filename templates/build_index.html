@@ -48,9 +48,15 @@ td {
       <th>Memory</th>
       <th>Storage</th>
       <th>Total Cost</th>
+      <th></th>
     </tr>
-    {% for n in builds %}
-      <tr> {{n|safe}} </tr>
+    {% for row, id in builds %}
+      <tr>
+        {{row|safe}}
+        <td>
+          <form method="POST" action="{{ url_for('remove_build') }}"><input type="submit" value="Remove build"><input value = "{{id}}" type="hidden" name="build_id"></form>
+        </td>
+      </tr>
     {% endfor %}
   </table>
   
@@ -58,7 +64,7 @@ td {
 
   <form method="POST" action="{{ url_for('add_new_build') }}">
   <p>Add a new build: <input type="text" name="BuildName"> <input type="submit" value="Add"></p>
-  </form>                    
+  </form>
 
 
 {% endblock %}
