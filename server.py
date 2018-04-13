@@ -89,7 +89,7 @@ def cpu_index():
     return render_template("cpu_index.html", **context)
 
 
-@app.route('/search_cpu')
+@app.route('/search_cpu', methods=['POST'])
 def search_cpu():
     """
     search cpu name using needle in haystack
