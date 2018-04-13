@@ -73,7 +73,7 @@ def cpu_index():
     query = '''SELECT DISTINCT c.cpu_id, c.cpu_name, c.speed, c.cores, c.tdp, c.price FROM cpu c,
  cpu_sockets cs WHERE c.cpu_id = cs.cpu_id {}'''.format("AND cs.mobo_id = {}".format(
             session['mobo_id']) if session['socket'] and 'mobo_id' in session else "") 
-    if 'cpu_search' in query:
+    if 'cpu_search' in session:
         query += " AND c.cpu_name LIKE '%{}%'".format(query)
         session.pop('cpu_search', None)
     print >> sys.stderr, query
