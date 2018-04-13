@@ -72,7 +72,7 @@ def cpu_index():
     all_ids = []
     query = '''SELECT DISTINCT c.cpu_id, c.cpu_name, c.speed, c.cores, c.tdp, c.price FROM cpu c,
  cpu_sockets cs WHERE cs.mobo_id = {} AND c.cpu_id = cs.cpu_id'''.format(
-     session['mobo_id']) if session['socket'] else "SELECT * FROM cpu"
+     session['mobo_id']) if session['socket'] and 'mobo_id' in session else "SELECT * FROM cpu"
     print >> sys.stderr, query
 
     cursor = g.conn.execute(query)
@@ -106,7 +106,7 @@ def motherboard_index():
     query_select = "SELECT DISTINCT m.mobo_id, m.mobo_name, m.ram_slots, m.price"
     query_from = " FROM motherboard m"
     query_where = " WHERE m.ram_slots >= {}".format(session['cur_mem_slots'])
-    if session['socket']:
+    if session['socket']  and 'cpu_id' in session:
         query_from += ", cpu_sockets cs"
         query_where += " AND cs.cpu_id = {} and m.mobo_id = cs.mobo_id".format(session['cpu_id'])
     if session['form_factor']:
@@ -786,7 +786,7 @@ def add_complete_build():
         flash('Need to select a power supply for every build!')
         incompatible_build = True
 
-    if 'mem_ids' not in session or session['mem_id'] is None:
+    if 'mem_ids' not in session or session['mem_ids'] is None:
         flash('Need to select memory for every build!')
         incompatible_build = True
 
