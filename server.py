@@ -152,7 +152,7 @@ def search_mobo():
     search mobo name using needle in haystack
     """
     session['mobo_search'] = request.form['search_query']
-    return redirect(url_for('mobo_index'))
+    return redirect(url_for('motherboard_index'))
 
 
 @app.route('/psu_index')
@@ -325,7 +325,7 @@ def search_mem():
     search mem name using needle in haystack
     """
     session['mem_search'] = request.form['search_query']
-    return redirect(url_for('mem_index'))
+    return redirect(url_for('memory_index'))
 
 
 @app.route('/storage_index')
@@ -368,7 +368,7 @@ def search_sto():
     search sto name using needle in haystack
     """
     session['sto_search'] = request.form['search_query']
-    return redirect(url_for('sto_index'))
+    return redirect(url_for('storage_index'))
 
 
 @app.route('/current_build')
