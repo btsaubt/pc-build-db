@@ -71,8 +71,8 @@ def cpu_index():
     all_cpus = []
     all_ids = []
     query = '''SELECT DISTINCT c.cpu_id, c.cpu_name, c.speed, c.cores, c.tdp, c.price FROM cpu c,
- cpu_sockets cs WHERE cs.mobo_id = {} AND c.cpu_id = cs.cpu_id'''.format(
-     session['mobo_id']) if session['socket'] and 'mobo_id' in session else "SELECT * FROM cpu"
+ cpu_sockets cs WHERE c.cpu_id = cs.cpu_id {}'''.format("AND cs.mobo_id = {}".format(
+            session['mobo_id']) if session['socket'] and 'mobo_id' in session else "") 
     print >> sys.stderr, query
 
     cursor = g.conn.execute(query)
@@ -106,7 +106,7 @@ def motherboard_index():
     query_select = "SELECT DISTINCT m.mobo_id, m.mobo_name, m.ram_slots, m.price"
     query_from = " FROM motherboard m"
     query_where = " WHERE m.ram_slots >= {}".format(session['cur_mem_slots'])
-    if session['socket']  and 'cpu_id' in session:
+    if session['socket'] and 'cpu_id' in session:
         query_from += ", cpu_sockets cs"
         query_where += " AND cs.cpu_id = {} and m.mobo_id = cs.mobo_id".format(session['cpu_id'])
     if session['form_factor']:
