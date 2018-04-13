@@ -756,7 +756,7 @@ def build_index():
     return render_template('build_index.html', **context)
 
 
-@app.route('/remove_build')
+@app.route('/remove_build', methods = ['POST'])
 def remove_build():
     """
     remove a build from the database
