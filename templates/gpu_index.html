@@ -19,6 +19,9 @@ td {
 </style>
 
   <h2>GPUs</h2>
+  <form method="POST" action="{{ url_for('search_gpu') }}">
+    <p>Search graphics card names: <input type="text" name="search_query"> <input type="submit" value="Search"></p>
+  </form>
   <div>
     <table style="width:100%">
       <tr>

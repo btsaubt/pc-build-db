@@ -20,6 +20,9 @@ td {
 
 
   <h2>Storage</h2>
+  <form method="POST" action="{{ url_for('search_sto') }}">
+    <p>Search storage names: <input type="text" name="search_query"> <input type="submit" value="Search"></p>
+  </form>
   <div>
     <table style="width:100%">
       <tr>

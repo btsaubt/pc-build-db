@@ -19,7 +19,9 @@ td {
 </style>
 
   <h2>Cases</h2>
-  <div>{{data}}</div>
+  <form method="POST" action="{{ url_for('search_cases') }}">
+    <p>Search case names: <input type="text" name="search_query"> <input type="submit" value="Search"></p>
+  </form>
   <div>
     <table style="width:100%">
       <tr>
