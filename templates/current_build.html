@@ -50,19 +50,19 @@ tr:nth-of-type(odd){
       </tr>
 
       <tr>
-        <td id="smaller">CPU</td> <td>{{cpu_name}}</td> <td> {% if cpu_price is defined %} ${{ cpu_price }} {% endif %} </td> <td><form method="GET" action="{{ url_for('cpu_index') }}"><input type="submit" value="Select a CPU"></form></td><td></td>
+        <td id="smaller">CPU</td> <td>{{cpu_name}}</td> <td> {% if cpu_price is defined %} ${{ cpu_price }} {% endif %} </td> <td></td> <td><form method="GET" action="{{ url_for('cpu_index') }}"><input type="submit" value="Select a CPU"></form></td><td></td>
       </tr>
 
       <tr>
-        <td id="smaller">Motherboard</td> <td>{{mobo_name}}</td> <td> {% if mobo_price is defined %} ${{ mobo_price }} {% endif %} </td> <td><form method="GET" action="{{ url_for('motherboard_index') }}"><input type="submit" value="Select a motherboard"></form></td><td></td>
+        <td id="smaller">Motherboard</td> <td>{{mobo_name}}</td> <td> {% if mobo_price is defined %} ${{ mobo_price }} {% endif %} </td> <td></td> <td><form method="GET" action="{{ url_for('motherboard_index') }}"><input type="submit" value="Select a motherboard"></form></td><td></td>
       </tr>
 
       <tr>
-        <td id="smaller">Power Supply</td> <td>{{psu_name}}</td>  <td> {% if psu_price is defined %} ${{ psu_price }} {% endif %} </td> <td><form method="GET" action="{{ url_for('psu_index') }}"><input type="submit" value="Select a power supply"></form></td><td></td>
+        <td id="smaller">Power Supply</td> <td>{{psu_name}}</td>  <td> {% if psu_price is defined %} ${{ psu_price }} {% endif %} </td> <td></td> <td><form method="GET" action="{{ url_for('psu_index') }}"><input type="submit" value="Select a power supply"></form></td><td></td>
       </tr>
 
       <tr>
-        <td id="smaller">Case</td> <td>{{case_name}}</td> <td> {% if case_price is defined %} {{ case_price }} {% endif %} </td> <td><form method="GET" action="{{ url_for('case_index') }}"><input type="submit" value="Select a case"></form></td><td></td>
+        <td id="smaller">Case</td> <td>{{case_name}}</td> <td> {% if case_price is defined %} {{ case_price }} {% endif %} </td> <td></td> <td><form method="GET" action="{{ url_for('case_index') }}"><input type="submit" value="Select a case"></form></td><td></td>
       </tr>
 
       {% for gpu_n, gpu_i, gpu_p in gpu_name %}
@@ -156,7 +156,7 @@ tr:nth-of-type(odd){
       {% endfor %}
 
       <tr id="final">
-        <td id="smaller"><strong>Total Cost:</strong></td> <td></td> <td></td> <td>${{"%.2f"|format(total_cost)}}</td>
+        <td id="smaller"><strong>Total Cost:</strong></td> <td></td> <td></td> <td></td> <td>${{"%.2f"|format(total_cost)}}</td>
 
       </tr>
     </table>
