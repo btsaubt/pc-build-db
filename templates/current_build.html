@@ -46,50 +46,35 @@ tr:nth-of-type(odd){
   <div id="container">
     <table>
       <tr>
-        <th style="width:20%;">Part</th> <th style="width:40%;"> Part Name </th> <th> </th> <th> </th>
+        <th style="width:20%;">Part</th> <th style="width:35%;"> Part Name </th> <th> Price </th> <th> </th> <th> </th>
       </tr>
-      <tr>
-        <td id="smaller">CPU</td> <td>{{cpu_name}}</td> <td><form method="GET" action="{{ url_for('cpu_index') }}"><input type="submit" value="Select a CPU"></form></td><td></td>
-      </tr>
-      <tr>
-        <td id="smaller">Motherboard</td> <td>{{mobo_name}}</td> <td><form method="GET" action="{{ url_for('motherboard_index') }}"><input type="submit" value="Select a motherboard"></form></td><td></td>
-      </tr>
-      <tr>
-        <td id="smaller">Power Supply</td> <td>{{psu_name}}</td> <td><form method="GET" action="{{ url_for('psu_index') }}"><input type="submit" value="Select a power supply"></form></td><td></td>
-      </tr>
-      <tr>
-        <td id="smaller">Case</td> <td>{{case_name}}</td> <td><form method="GET" action="{{ url_for('case_index') }}"><input type="submit" value="Select a case"></form></td><td></td>
-      </tr>
-<!--      <tr>-->
 
-<!--  OLD CODE, see revised GPU, mem, and sto rows below
+      <tr>
+        <td id="smaller">CPU</td> <td>{{cpu_name}}</td> <td> {% if cpu_price is defined %} ${{ cpu_price }} {% endif %} </td> <td></td> <td><form method="GET" action="{{ url_for('cpu_index') }}"><input type="submit" value="Select a CPU"></form></td>
+      </tr>
 
-        <td id="smaller">Graphics Card</td>
-        <td>{% for gpu_n in gpu_name %}
-          {{gpu_n}}
-        {% endfor %}</td>
-        <td><form method="GET" action="{{ url_for('gpu_index') }}"><input type="submit" value="Select a graphics card"></form></td><td></td>
-      </tr>
       <tr>
-        <td id="smaller">Memory</td>
-        <td>{% for mem_n in mem_name %}
-          {{mem_n}}
-        {% endfor %}</td>
-        <td><form method="GET" action="{{ url_for('memory_index') }}"><input type="submit" value="Select memory"></form></td><td></td>
+        <td id="smaller">Motherboard</td> <td>{{mobo_name}}</td> <td> {% if mobo_price is defined %} ${{ mobo_price }} {% endif %} </td> <td></td> <td><form method="GET" action="{{ url_for('motherboard_index') }}"><input type="submit" value="Select a motherboard"></form></td>
       </tr>
+
       <tr>
-        <td id="smaller">Storage</td>
-        <td>{% for sto_n in sto_name %}
-          {{sto_n}}
-        {% endfor %}</td>
-        <td><form method="GET" action="{{ url_for('storage_index') }}"><input type="submit" value="Select storage"></form></td><td></td>
+        <td id="smaller">Power Supply</td> <td>{{psu_name}}</td>  <td> {% if psu_price is defined %} ${{ psu_price }} {% endif %} </td> <td></td> <td><form method="GET" action="{{ url_for('psu_index') }}"><input type="submit" value="Select a power supply"></form></td>
       </tr>
--->
-      {% for gpu_n, gpu_i in gpu_name %}
+
+      <tr>
+        <td id="smaller">Case</td> <td>{{case_name}}</td> <td> {% if case_price is defined %} {{ case_price }} {% endif %} </td> <td></td> <td><form method="GET" action="{{ url_for('case_index') }}"><input type="submit" value="Select a case"></form></td>
+      </tr>
+
+      {% for gpu_n, gpu_i, gpu_p in gpu_name %}
         {% if loop.index == 1 %}
           <tr>
             <td id="smaller">Graphics Card</td>
             <td>{{ gpu_n }}</td>
+            <td>
+              {% if gpu_n != "No graphics card selected" %}
+                ${{ gpu_p }}
+              {% endif %}
+            </td>
             <td>
               {% if gpu_n != "No graphics card selected" %}
                 <form method="POST" action="{{ url_for('remove_gpu') }}"><input type="submit" value="Remove from build"><input value = "{{gpu_i}}" type="hidden" name="gpu_id"></form>
@@ -101,6 +86,7 @@ tr:nth-of-type(odd){
           <tr>
             <td></td>
             <td>{{ gpu_n }}</td>
+            <td>${{ gpu_p }}</td>
             <td>
               <form method="POST" action="{{ url_for('remove_gpu') }}"><input type="submit" value="Remove from build"><input value = "{{gpu_i}}" type="hidden" name="gpu_id"></form>
             </td>
@@ -109,11 +95,16 @@ tr:nth-of-type(odd){
         {% endif %}
       {% endfor %}
 
-      {% for mem_n, mem_i in mem_name %}
+      {% for mem_n, mem_i, mem_p in mem_name %}
         {% if loop.index == 1 %}
           <tr>
             <td id="smaller">Memory</td>
             <td>{{ mem_n }}</td>
+            <td>
+              {% if mem_n != "No memory selected" %}
+                ${{ mem_p }}
+              {% endif %}
+            </td>
             <td>
               {% if mem_n != "No memory selected" %}
                 <form method="POST" action="{{ url_for('remove_mem') }}"><input type="submit" value="Remove from build"><input value = "{{mem_i}}" type="hidden" name="mem_id"></form>
@@ -125,6 +116,7 @@ tr:nth-of-type(odd){
           <tr>
             <td></td>
             <td>{{ mem_n }}</td>
+            <td>${{ mem_p }}</td>
             <td>
               <form method="POST" action="{{ url_for('remove_mem') }}"><input type="submit" value="Remove from build"><input value = "{{mem_i}}" type="hidden" name="mem_id"></form>
             </td>
@@ -133,11 +125,16 @@ tr:nth-of-type(odd){
         {% endif %}
       {% endfor %}
 
-      {% for sto_n, sto_i in sto_name %}
+      {% for sto_n, sto_i, sto_p in sto_name %}
         {% if loop.index == 1 %}
           <tr>
             <td id="smaller">Storage</td>
             <td>{{ sto_n }}</td>
+            <td>
+              {% if sto_n != "No storage selected" %}
+                ${{ sto_p }}
+              {% endif %}
+            </td>
             <td>
               {% if sto_n != "No storage selected" %}
                 <form method="POST" action="{{ url_for('remove_sto') }}"><input type="submit" value="Remove from build"><input value = "{{sto_i}}" type="hidden" name="sto_id"></form>
@@ -149,6 +146,7 @@ tr:nth-of-type(odd){
           <tr>
             <td></td>
             <td>{{ sto_n }}</td>
+            <td>${{ sto_p }}</td>
             <td>
               <form method="POST" action="{{ url_for('remove_sto') }}"><input type="submit" value="Remove from build"><input value = "{{sto_i}}" type="hidden" name="sto_id"></form>
             </td>
@@ -158,7 +156,7 @@ tr:nth-of-type(odd){
       {% endfor %}
 
       <tr id="final">
-        <td id="smaller"><strong>Total Cost:</strong></td> <td></td> <td></td> <td>${{"%.2f"|format(total_cost)}}</td>
+        <td id="smaller"><strong>Total Cost:</strong></td> <td></td> <td></td> <td></td> <td>${{"%.2f"|format(total_cost)}}</td>
 
       </tr>
     </table>
