@@ -73,6 +73,9 @@ def cpu_index():
     query = '''SELECT DISTINCT c.cpu_id, c.cpu_name, c.speed, c.cores, c.tdp, c.price FROM cpu c,
  cpu_sockets cs WHERE c.cpu_id = cs.cpu_id {}'''.format("AND cs.mobo_id = {}".format(
             session['mobo_id']) if session['socket'] and 'mobo_id' in session else "") 
+    if 'cpu_search' in session:
+        query += " AND c.cpu_name LIKE '%%{}%%'".format(session['cpu_search'])
+        session.pop('cpu_search', None)
     print >> sys.stderr, query
 
     cursor = g.conn.execute(query)
@@ -84,6 +87,15 @@ def cpu_index():
     context = dict(cpus=zip(all_cpus, all_ids))
 
     return render_template("cpu_index.html", **context)
+
+
+@app.route('/search_cpu', methods=['POST'])
+def search_cpu():
+    """
+    search cpu name using needle in haystack
+    """
+    session['cpu_search'] = request.form['search_query']
+    return redirect(url_for('cpu_index'))
 
 
 @app.route('/motherboard_index')
@@ -129,6 +141,15 @@ def motherboard_index():
     context = dict(mobos=zip(all_mobos, all_ids))
 
     return render_template("motherboard_index.html", **context)
+
+
+@app.route('/search_mobo')
+def search_mobo():
+    """
+    search mobo name using needle in haystack
+    """
+    session['mobo_search'] = request.form['search_query']
+    return redirect(url_for('mobo_index'))
 
 
 @app.route('/psu_index')
