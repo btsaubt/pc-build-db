@@ -127,6 +127,9 @@ def motherboard_index():
             query_where +=  " AND ff.case_id = {}".format(session['case_id'])
         if 'psu_id' in session:
             query_where +=  " AND ff.psu_id = {}".format(session['psu_id'])
+    if 'mobo_search' in session:
+        query += " AND m.mobo_name LIKE '%%{}%%'".format(session['mobo_search'])
+        session.pop('mobo_search', None)
 
     query = '{}{}{}'.format(query_select, query_from, query_where)
     print >> sys.stderr, query
@@ -143,7 +146,7 @@ def motherboard_index():
     return render_template("motherboard_index.html", **context)
 
 
-@app.route('/search_mobo')
+@app.route('/search_mobo', methods=['POST'])
 def search_mobo():
     """
     search mobo name using needle in haystack
@@ -162,15 +165,17 @@ def psu_index():
 
     form_conditional = ''
     if session['form_factor']:
-        form_conditional = 'WHERE '
         if 'case_id' in session:
-            form_conditional += 'ff.case_id = {} '.format(session['case_id'])
+            form_conditional += 'AND ff.case_id = {} '.format(session['case_id'])
         if 'mobo_id' in session:
-            form_conditional += '{} ff.mobo_id = {}'.format('AND' if 'case_id' in session else '',
-                                                             session['mobo_id'])
+            form_conditional += 'AND ff.mobo_id = {}'.format(session['mobo_id'])
 
     query = '''SELECT DISTINCT p.psu_id, p.psu_name, p.series, p.efficiency, p.watts, p.modular,
- p.price FROM psu p, form_compatible ff {}'''.format(form_conditional)
+ p.price FROM psu p, form_compatible ff WHERE p.psu_id = ff.psu_id {}'''.format(form_conditional)
+    if 'psu_search' in session:
+        query += " AND p.psu_name LIKE '%%{}%%'".format(session['psu_search'])
+        session.pop('psu_search', None)
+
     print >> sys.stderr, query
 
     cursor = g.conn.execute(query)
@@ -185,6 +190,15 @@ def psu_index():
     return render_template("psu_index.html", **context)
 
 
+@app.route('/search_psu', methods=['POST'])
+def search_psu():
+    """
+    search psu name using needle in haystack
+    """
+    session['psu_search'] = request.form['search_query']
+    return redirect(url_for('psu_index'))
+
+
 @app.route('/case_index')
 def case_index():
     """
@@ -196,15 +210,17 @@ def case_index():
 
     form_conditional = ''
     if session['form_factor']:
-        form_conditional = 'WHERE '
         if 'psu_id' in session:
-            form_conditional += 'ff.psu_id = {} '.format(session['psu_id'])
+            form_conditional += 'AND ff.psu_id = {} '.format(session['psu_id'])
         if 'mobo_id' in session:
-            form_conditional += '{} ff.mobo_id = {}'.format('AND' if 'psu_id' in session else '',
-                                                              session['mobo_id'])
+            form_conditional += 'AND ff.mobo_id = {}'.format(session['mobo_id'])
 
     query = '''SELECT DISTINCT c.case_id, c.case_name, c.type, c.ext_bays, c.int_bays, c.price FROM
- cases c, form_compatible ff {}'''.format(form_conditional)
+ cases c, form_compatible ff WHERE c.case_id = ff.case_id {}'''.format(form_conditional)
+    if 'case_search' in session:
+        query += " AND c.case_name LIKE '%%{}%%'".format(session['case_search'])
+        session.pop('case_search', None)
+
     print >> sys.stderr, query
 
     cursor = g.conn.execute(query)
@@ -217,6 +233,15 @@ def case_index():
     context = dict(cases=zip(all_cases, all_ids))
 
     return render_template("case_index.html", **context)
+
+
+@app.route('/search_case', methods=['POST'])
+def search_case():
+    """
+    search case name using needle in haystack
+    """
+    session['case_search'] = request.form['search_query']
+    return redirect(url_for('case_index'))
 
 
 @app.route('/gpu_index')
@@ -234,6 +259,13 @@ def gpu_index():
         all_gpu_ids = all_gpu_ids[4:]
         query += " WHERE " + all_gpu_ids
 
+    if 'gpu_search' in session:
+        query += " {} gpu_name LIKE '%%{}%%'".format('WHERE' if 'gpu_ids' in session else 'AND',
+                                                       session['gpu_search'])
+        session.pop('gpu_search', None)
+
+    print >> sys.stderr, query
+
     cursor = g.conn.execute(query)    
     for result in cursor:
         all_gpus.append('''<td>{}</td><td>{}</td><td>{}</td><td>{}GHz</td><td>{}W</td><td>{}GB</td>
@@ -244,6 +276,15 @@ def gpu_index():
     context = dict(gpus=zip(all_gpus, all_ids))
 
     return render_template("gpu_index.html", **context)
+
+
+@app.route('/search_gpu', methods=['POST'])
+def search_gpu():
+    """
+    search gpu name using needle in haystack
+    """
+    session['gpu_search'] = request.form['search_query']
+    return redirect(url_for('gpu_index'))
 
 
 @app.route('/memory_index')
@@ -260,6 +301,12 @@ def memory_index():
         for mid in session['mem_ids']:
             query += ' AND mem_id != {}'.format(mid)
 
+    if 'mem_search' in session:
+        query += " AND mem_name LIKE '%%{}%%'".format(session['mem_search'])
+        session.pop('mem_search', None)
+
+    print >> sys.stderr, query
+
     cursor = g.conn.execute(query)
     for result in cursor:
         all_mems.append('<td>{}</td><td>{}</td><td>{}</td><td>{}GB</td><td>{}</td><td>${}</td>'.
@@ -270,6 +317,15 @@ def memory_index():
     context = dict(mems=zip(all_mems, all_ids))
 
     return render_template("memory_index.html", **context)
+
+
+@app.route('/search_mem', methods=['POST'])
+def search_mem():
+    """
+    search mem name using needle in haystack
+    """
+    session['mem_search'] = request.form['search_query']
+    return redirect(url_for('mem_index'))
 
 
 @app.route('/storage_index')
@@ -288,6 +344,11 @@ def storage_index():
         all_sto_ids = all_sto_ids[4:]
         query += " WHERE " + all_sto_ids
 
+    if 'sto_search' in session:
+        query += " {} sto_name LIKE '%%{}%%'".format('WHERE' if 'sto_ids' in session else 'AND',
+                                                       session['sto_search'])
+        session.pop('sto_search', None)
+
     cursor = g.conn.execute(query)
     for result in cursor:
         all_stos.append('''<td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}GB</td><td>{}</td>
@@ -299,6 +360,15 @@ def storage_index():
     context = dict(stos=zip(all_stos, all_ids))
 
     return render_template("storage_index.html", **context)
+
+
+@app.route('/search_sto', methods=['POST'])
+def search_sto():
+    """
+    search sto name using needle in haystack
+    """
+    session['sto_search'] = request.form['search_query']
+    return redirect(url_for('sto_index'))
 
 
 @app.route('/current_build')
