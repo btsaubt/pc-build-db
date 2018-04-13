@@ -11,6 +11,10 @@ table			{
 					border-collapse: collapse;
 				}
 
+th				{
+				text-align: left;
+				}
+
 
 
 .page           { height: auto; width: auto;}
