@@ -1,4 +1,4 @@
-body            { font-family: 'Verdana', sans-serif; background: white; font-size: 12px; }
+body            { font-family: 'Verdana', sans-serif; background: white; font-size: 12px; margin: 1em; padding-top: 1em; padding-bottom: 2em;}
 a, h1, h2       { color: #000000; }
 h1, h2          { font-family: 'Verdana', sans-serif; margin: 0; }
 h1              { border-bottom: 3px solid #FFCCBC; }
