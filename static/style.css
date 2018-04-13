@@ -17,8 +17,8 @@ table			{
                   margin-bottom: 1em; background: white; }
 .flash          { background: #cee5F5; margin: 0.5em; padding: 0.5em;
                   border: 1px solid #aacbe2; 
-                  animation: blinker 0.3s linear;
-                  animation-iteration-count: 5;
+                  animation: blinker 0.33s linear;
+                  animation-iteration-count: 3;
               	}
 .error          { background: #f0d6d6; padding: 0.5em; }
 
