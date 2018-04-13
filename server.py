@@ -751,9 +751,19 @@ def build_index():
         all_builds.append(curr_build)
     cursor.close()
 
-    context = dict(builds=all_builds, build_ids=all_build_ids)
+    context = dict(builds = zip(all_builds, all_build_ids))
 
     return render_template('build_index.html', **context)
+
+
+@app.route('/remove_build')
+def remove_build():
+    """
+    remove a build from the database
+    """
+    query = "DELETE FROM builds WHERE build_id = {}".format(request.form['build_id'])
+    engine.execute(query)
+    return redirect(url_for('build_index'))
 
 
 @app.route('/add_complete_build')
