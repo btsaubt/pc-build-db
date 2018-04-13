@@ -55,19 +55,19 @@ input[type="submit"] {
       </tr>
 
       <tr>
-        <td id="smaller">CPU</td> <td>{{cpu_name}}</td> <td> {% if cpu_price is defined %} ${{ cpu_price }} {% endif %} </td> <td></td> <td><form method="GET" action="{{ url_for('cpu_index') }}"><input type="submit" value="Select a CPU"></form></td>
+        <td id="smaller">CPU</td> <td>{{cpu_name}}</td> <td> {% if cpu_price is defined %} ${{"%.2f"|format(cpu_price)}} {% endif %} </td> <td></td> <td><form method="GET" action="{{ url_for('cpu_index') }}"><input type="submit" value="Select a CPU"></form></td>
       </tr>
 
       <tr>
-        <td id="smaller">Motherboard</td> <td>{{mobo_name}}</td> <td> {% if mobo_price is defined %} ${{ mobo_price }} {% endif %} </td> <td></td> <td><form method="GET" action="{{ url_for('motherboard_index') }}"><input type="submit" value="Select a motherboard"></form></td>
+        <td id="smaller">Motherboard</td> <td>{{mobo_name}}</td> <td> {% if mobo_price is defined %} ${{"%.2f"|format(mobo_price)}} {% endif %} </td> <td></td> <td><form method="GET" action="{{ url_for('motherboard_index') }}"><input type="submit" value="Select a motherboard"></form></td>
       </tr>
 
       <tr>
-        <td id="smaller">Power Supply</td> <td>{{psu_name}}</td>  <td> {% if psu_price is defined %} ${{ psu_price }} {% endif %} </td> <td></td> <td><form method="GET" action="{{ url_for('psu_index') }}"><input type="submit" value="Select a power supply"></form></td>
+        <td id="smaller">Power Supply</td> <td>{{psu_name}}</td>  <td> {% if psu_price is defined %} ${{"%.2f"|format(psu_price) }} {% endif %} </td> <td></td> <td><form method="GET" action="{{ url_for('psu_index') }}"><input type="submit" value="Select a power supply"></form></td>
       </tr>
 
       <tr>
-        <td id="smaller">Case</td> <td>{{case_name}}</td> <td> {% if case_price is defined %} {{ case_price }} {% endif %} </td> <td></td> <td><form method="GET" action="{{ url_for('case_index') }}"><input type="submit" value="Select a case"></form></td>
+        <td id="smaller">Case</td> <td>{{case_name}}</td> <td> {% if case_price is defined %} ${{"%.2f"|format(case_price) }} {% endif %} </td> <td></td> <td><form method="GET" action="{{ url_for('case_index') }}"><input type="submit" value="Select a case"></form></td>
       </tr>
 
       {% for gpu_n, gpu_i, gpu_p in gpu_name %}
@@ -91,7 +91,7 @@ input[type="submit"] {
           <tr>
             <td></td>
             <td>{{ gpu_n }}</td>
-            <td>${{ gpu_p }}</td>
+            <td>${{"%.2f"|format(gpu_p) }}</td>
             <td>
               <form method="POST" action="{{ url_for('remove_gpu') }}"><input type="submit" value="Remove from build"><input value = "{{gpu_i}}" type="hidden" name="gpu_id"></form>
             </td>
@@ -107,7 +107,7 @@ input[type="submit"] {
             <td>{{ mem_n }}</td>
             <td>
               {% if mem_n != "No memory selected" %}
-                ${{ mem_p }}
+                ${{"%.2f"|format(mem_p) }}
               {% endif %}
             </td>
             <td>
@@ -121,7 +121,7 @@ input[type="submit"] {
           <tr>
             <td></td>
             <td>{{ mem_n }}</td>
-            <td>${{ mem_p }}</td>
+            <td>${{"%.2f"|format(mem_p) }}</td>
             <td>
               <form method="POST" action="{{ url_for('remove_mem') }}"><input type="submit" value="Remove from build"><input value = "{{mem_i}}" type="hidden" name="mem_id"></form>
             </td>
@@ -137,7 +137,7 @@ input[type="submit"] {
             <td>{{ sto_n }}</td>
             <td>
               {% if sto_n != "No storage selected" %}
-                ${{ sto_p }}
+                ${{"%.2f"|format(sto_p) }}
               {% endif %}
             </td>
             <td>
@@ -151,7 +151,7 @@ input[type="submit"] {
           <tr>
             <td></td>
             <td>{{ sto_n }}</td>
-            <td>${{ sto_p }}</td>
+            <td>${{"%.2f"|format(sto_p) }}</td>
             <td>
               <form method="POST" action="{{ url_for('remove_sto') }}"><input type="submit" value="Remove from build"><input value = "{{sto_i}}" type="hidden" name="sto_id"></form>
             </td>
